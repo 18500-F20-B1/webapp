@@ -4,9 +4,6 @@ const config = {
   jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
   mongoUri: process.env.MONGODB_URI ||
     process.env.MONGO_HOST ||
-    // 'mongodb://' + (process.env.IP || 'localhost') + ':' +
-    // (process.env.MONGO_PORT || '27017') +
-    // '/mernproject'
     "mongodb+srv://yuhan:18500@cluster0.qiv5v.mongodb.net/cluster0?retryWrites=true&w=majority"
   }
 
