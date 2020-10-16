@@ -1,0 +1,22 @@
+{
+  "name": "alarm-webapp",
+  "version": "1.0.0",
+  "description": "web application for a running alarm clock",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18500-F20-B1/webapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/18500-F20-B1/webapp/issues"
+  },
+  "homepage": "https://github.com/18500-F20-B1/webapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
