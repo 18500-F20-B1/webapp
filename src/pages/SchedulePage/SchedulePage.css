@@ -1,0 +1,9 @@
+li{
+  cursor: pointer;
+  margin: 15px 0;
+}
+
+.help-text {
+  padding-left: 20px;
+  color: rosybrown;
+}
