@@ -1,10 +1,33 @@
-import React from 'react';
-import { Button } from 'antd';
-import './App.css';
+import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import NavBar from "./components/NavBar/NavBar";
+import Footer from "./components/Footer/Footer";
+import CreateAlarmPage from "./pages/CreateAlarmPage/CreateAlarmPage";
+import CreateRingtonePage from  "./pages/CreateRingtonePage/CreateRingtonePage";
+import SchedulePage from "./pages/SchedulePage/SchedulePage";
+import appRoutes from "./shared/appRoutes";
+import "./App.css";
 
 const App = () => (
   <div className="App">
-    <Button type="primary">Button</Button>
+    <NavBar />
+
+    <div className="main-content">
+      <Switch>
+        <Route exact path={appRoutes.createAlarm}>
+          <CreateAlarmPage />
+        </Route>
+        <Route exact path={appRoutes.createRingtone}>
+          <CreateRingtonePage />
+        </Route>
+        <Route exact path={appRoutes.schedule}>
+          <SchedulePage />
+        </Route>
+        <Redirect to={appRoutes.home} />
+      </Switch>
+    </div>
+
+    <Footer />
   </div>
 );
 
