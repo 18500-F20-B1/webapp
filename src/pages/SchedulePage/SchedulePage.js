@@ -23,7 +23,7 @@ class SchedulePage extends React.Component {
           dataSource={this.state.schedule}
           renderItem={alarm => 
             <List.Item onClick={() => playRingtone(alarm.ringtone.notes)}>
-              {alarm.day} {moment(alarm.time).format("hh:mm")}
+              {alarm.day} {moment(alarm.time).format("HH:mm")}
             </List.Item>}
         />
       </div>
