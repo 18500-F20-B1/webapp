@@ -10,19 +10,34 @@ export const DAYS = {
   sunday: "Sunday"
 };
 
-export const ringtones = {
-  ringtone1: [50, 51, 52, 53, 54],
-  ringtone2: [54, 56, 58, 60, 62],
-  ringtone3: [54, 52, 50, 62, 60],
-  ringtone4: [48, 44, 46, 50, 52]
-};
-
-export const playRingtone = (name) => {
+export const playRingtone = (notes) => {
   let ac = new AudioContext()
   Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (piano) {
-    ringtones[name].forEach((pitch, i) => {
-      let step = 0.2;
-      piano.play(pitch, ac.currentTime + i * step, { duration: step});
+    let totalDuration = 0;
+    for (let i = 0; i < notes.length; i = i + 2) {
+      let pitch = notes[i];
+      let duration = notes[i + 1];
+      piano.play(pitch, ac.currentTime + totalDuration, { duration });
+      totalDuration += duration;
+    }
+  })
+};
+
+export const testPlayRingtone = (pitches, durations) => {
+  let ac = new AudioContext()
+  Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (piano) {
+    let totalDuration = 0;
+    pitches.forEach((pitch, i) => {
+      let duration = durations[i];
+      piano.play(pitch, ac.currentTime + totalDuration, { duration });
+      totalDuration += duration;
     })
+  })
+};
+
+export const playNote = (pitch, duration) => {
+  let ac = new AudioContext()
+  Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (piano) {
+    piano.play(pitch, ac.currentTime, { duration });
   })
 };

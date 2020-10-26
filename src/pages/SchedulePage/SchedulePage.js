@@ -1,16 +1,15 @@
 import React from "react";
 import { Divider, List } from "antd";
-import { DAYS, playRingtone } from "../../shared/utils";
+import { playRingtone } from "../../shared/utils";
 import "./SchedulePage.css";
+import moment from "moment";
 
-const alarms = [
-  {day: DAYS.monday, hour: 8, minute: 20, ringtone: "ringtone1" },
-  {day: DAYS.tuesday, hour: 9, minute: 20, ringtone: "ringtone2" },
-  {day: DAYS.wednesday, hour: 10, minute: 30, ringtone: "ringtone3" },
-  {day: DAYS.thursday, hour: 17, minute: 10, ringtone: "ringtone2" },
-  {day: DAYS.friday, hour: 20, minute: 40, ringtone: "ringtone1" }
-]
 class SchedulePage extends React.Component {
+
+  state = {
+    schedule: JSON.parse(localStorage.getItem("schedule")) || []
+  };
+
   render() {
     return (
       <div className="schedule-page-container">
@@ -21,10 +20,10 @@ class SchedulePage extends React.Component {
         <List
           size="large"
           bordered
-          dataSource={alarms}
-          renderItem={item => 
-            <List.Item onClick={() => playRingtone(item.ringtone)}>
-              {item.day} {item.hour} : {item.minute}
+          dataSource={this.state.schedule}
+          renderItem={alarm => 
+            <List.Item onClick={() => playRingtone(alarm.ringtone.notes)}>
+              {alarm.day} {moment(alarm.time).format("hh:mm")}
             </List.Item>}
         />
       </div>

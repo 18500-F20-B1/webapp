@@ -1,8 +1,7 @@
 import React from "react";
-import { Divider, Button, TimePicker, Checkbox, Radio } from "antd";
-import moment from "moment";
+import { Divider, Button, TimePicker, Checkbox, Radio, message } from "antd";
+import { DAYS, playRingtone } from "../../shared/utils";
 import "./CreateAlarmPage.css"
-import { DAYS, ringtones, playRingtone } from "../../shared/utils";
 
 const format = "HH:mm";
 
@@ -20,8 +19,60 @@ class CreateAlarmPage extends React.Component {
     checkSomeWeekdays: false,
     checkSomeWeekend: false,
     checkAllWeekdays: false,
-    checkAllWeekend: false
+    checkAllWeekend: false,
+    time: null,
+    ringtoneList: JSON.parse(localStorage.getItem("ringtoneList")),
+    chosenRingtone: null
   };
+
+  componentDidMount = () => {
+    localStorage.setItem("currDays", JSON.stringify([]));
+  }
+
+  updateDaysLocalStorage = (areWeekdays, days) => {
+    let newDays = JSON.parse(localStorage.getItem("currDays"));
+    if (!newDays) { 
+      newDays = []; 
+    }
+    if (days.length > 0) {
+      days.forEach(d => {
+        if (!(newDays.includes(d))) { newDays.push(d); }
+      });
+    } else if (areWeekdays) { // filter out all weekdays
+      newDays = newDays.filter(d => !optionsWeekdays.includes(d));
+    } else { // filter out all weekends
+      newDays = newDays.filter(d => !optionsWeekend.includes(d));
+    }
+    localStorage.setItem("currDays", JSON.stringify(newDays))
+  }
+
+  addDaysLocalStorage = (areWeekdays, days) => {
+    let changed = false;
+    let newDays = JSON.parse(localStorage.getItem("currDays"));
+    if (!newDays) { newDays = []; }
+
+    days.forEach(d => { // add in new days
+      if (!(newDays.includes(d))) { 
+        newDays.push(d);
+        changed = true;
+      }
+    });
+
+    if (!changed) { // remove extra days
+      if (areWeekdays) {
+        newDays.forEach(d => {
+          if (optionsWeekdays.includes(d) && !(days.includes(d))) { 
+            newDays.splice(newDays.indexOf(d), 1);
+        }})
+      } else {
+        newDays.forEach(d => {
+          if (optionsWeekend.includes(d) && !(days.includes(d))) { 
+            newDays.splice(newDays.indexOf(d), 1);
+        }})
+      }
+    }
+    localStorage.setItem("currDays", JSON.stringify(newDays))
+  }
 
   onChangeSingleWeekday = weekdayCheckedList => {
     this.setState({
@@ -29,6 +80,7 @@ class CreateAlarmPage extends React.Component {
       checkSomeWeekdays: !!weekdayCheckedList.length && weekdayCheckedList.length < optionsWeekdays.length,
       checkAllWeekdays: weekdayCheckedList.length === optionsWeekdays.length,
     });
+    this.addDaysLocalStorage(true, weekdayCheckedList);
   };
 
   onChangeSingleWeekend = weekendCheckedList => {
@@ -37,6 +89,7 @@ class CreateAlarmPage extends React.Component {
       checkSomeWeekend: !!weekendCheckedList.length && weekendCheckedList.length < optionsWeekend.length,
       checkAllWeekend: weekendCheckedList.length === optionsWeekend.length,
     });
+    this.addDaysLocalStorage(false, weekendCheckedList);
   };
 
   onChangeAllWeekdays = e => {
@@ -45,6 +98,12 @@ class CreateAlarmPage extends React.Component {
       checkSomeWeekdays: false,
       checkAllWeekdays: e.target.checked,
     });
+
+    if (e.target.checked) {
+      this.updateDaysLocalStorage(true, optionsWeekdays);
+    } else {
+      this.updateDaysLocalStorage(true, []);
+    }
   };
 
   onChangeAllWeekend = e => {
@@ -53,7 +112,35 @@ class CreateAlarmPage extends React.Component {
       checkSomeWeekend: false,
       checkAllWeekend: e.target.checked,
     });
+
+    if (e.target.checked) {
+      this.updateDaysLocalStorage(false, optionsWeekend);
+    } else {
+      this.updateDaysLocalStorage(false, []);
+    }
   };
+
+  onChangeTime = (time) => {
+    this.setState({ time });
+  }
+
+  onClickRingtone = rt => {
+    this.setState({ chosenRingtone : rt });
+    playRingtone(rt.notes);
+  }
+
+  onClickSubmit = () => {
+    let schedule = JSON.parse(localStorage.getItem("schedule"));
+    let days = JSON.parse(localStorage.getItem("currDays"));
+    if (!schedule) { schedule = []; }
+    days.forEach(day => {
+      let alarm = { ringtone : this.state.chosenRingtone, day, 
+                    time : this.state.time };
+      schedule.push(alarm); // TODO: validate alarm before schedule it
+    })
+    localStorage.setItem("schedule", JSON.stringify(schedule));
+    message.success("Alarm scheduled");
+  }
 
   render() {
     return (
@@ -91,25 +178,29 @@ class CreateAlarmPage extends React.Component {
           <br />
           <br />
           <TimePicker
-            defaultValue={moment("08:00", format)}
             format={format}
             minuteStep={5}
+            value={this.state.time}
+            onChange={this.onChangeTime}
           />
         </div>
         <Divider orientation="left">
           Set a Ringtone
         </Divider>
-        <div className="ringtone-form">
-          <Radio.Group defaultValue={Object.keys(ringtones)[0]} buttonStyle="solid">
-            {Object.keys(ringtones).map((rt, idx) => {
-              return (
-                <Radio.Button key={idx} value={rt} onClick={() => playRingtone(rt)}>{rt}</Radio.Button>
-              )})
-            }
-          </Radio.Group>
+        <div className="ringtone-form">          
+          {(this.state.ringtoneList && this.state.ringtoneList.length > 0) 
+            ? <Radio.Group buttonStyle="solid">{this.state.ringtoneList.map((rt, idx) => {
+                return (
+                  <Radio.Button key={idx} value={rt.name} onClick={() => this.onClickRingtone(rt)}>{rt.name}</Radio.Button>
+                )})}
+              </Radio.Group>
+            : <p>No ringtones detected</p>}
         </div>
         <div className="upload-alarm">
-          <Button type="primary" size="large">
+          <Button type="primary" size="large" 
+            disabled={!this.state.chosenRingtone || !(this.state.weekdayCheckedList 
+                      || this.state.weekendCheckedList) || !this.state.time}
+            onClick={this.onClickSubmit}>
             Submit
           </Button>
         </div>

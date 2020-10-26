@@ -1,0 +1,36 @@
+.create-ringtone-page-container {
+  text-align: center;
+}
+
+.add-note-container {
+  padding-left: 20%;
+  padding-right: 20%;
+  padding-bottom: 2%;
+  padding-top: 2%;
+}
+
+.add-note-button, .preview-button {
+  margin-bottom: 1%;
+}
+
+.name-input {
+  margin-bottom: 1%;
+}
+
+.play-note-button {
+  margin-left: 2%;
+  margin-right: 1%;
+}
+
+.pitch-select-span, .duration-select-span {
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.pitch-select, .duration-select {
+  width: 120px;
+}
+
+.one-note-container {
+  margin-bottom: 1%;
+}
