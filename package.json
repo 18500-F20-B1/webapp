@@ -1,0 +1,22 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18500-F20-B1/webapp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/18500-F20-B1/webapp/issues"
+  },
+  "homepage": "https://github.com/18500-F20-B1/webapp#readme",
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  }
+}
