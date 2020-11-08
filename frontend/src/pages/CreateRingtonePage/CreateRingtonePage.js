@@ -3,6 +3,8 @@ import { Divider, Select, Button, Input, message } from "antd";
 import { RightCircleOutlined, PlusOutlined, DeleteOutlined, SaveOutlined,
   CaretRightOutlined } from "@ant-design/icons";
 import { playNote, testPlayRingtone } from "../../shared/utils";
+import axios from 'axios';
+
 import "./CreateRingtonePage.css";
 
 const { Option } = Select;
@@ -14,7 +16,7 @@ const durationOptions = {
   "1/4": 4,
   "1/2": 2,
   "1": 1,
-}
+};
 
 class CreateRingtonePage extends React.Component {
 
@@ -31,7 +33,7 @@ class CreateRingtonePage extends React.Component {
     let durations = (storedDurations) ? storedDurations : [];
     let name = localStorage.getItem("currName");
     this.setState({ pitches, durations, name });
-  }
+  };
 
   changeStateAndLocalStorage(pitches, durations, name) {
     if (pitches) {
@@ -46,11 +48,11 @@ class CreateRingtonePage extends React.Component {
       this.setState({ name });
       localStorage.setItem("currName", name);
     }
-  }
+  };
 
   handleChangeName = (e) => {
     this.changeStateAndLocalStorage(null, null, e.target.value)
-  }
+  };
   
   handleAddNote = () => {
     let newPitches = [...this.state.pitches];
@@ -58,13 +60,13 @@ class CreateRingtonePage extends React.Component {
     newPitches.push(null);
     newDurations.push(null);
     this.changeStateAndLocalStorage(newPitches, newDurations);
-  }
+  };
 
   handlePreview = () => {
     let durations = [...this.state.durations];
     durations.forEach((e, idx) => durations[idx] = 1 / e);
     testPlayRingtone(this.state.pitches, durations);
-  }
+  };
 
   handleSubmit = () => {
     // save ringtone in local storage
@@ -73,16 +75,27 @@ class CreateRingtonePage extends React.Component {
       ringtone.notes.push(p);
       let d = this.state.durations[i]
       ringtone.notes.push(1/d); // e.g. need to store 2 as 1/2 s
-    })
+    });
+
     let ringtoneList = JSON.parse(localStorage.getItem("ringtoneList"));
     if (ringtoneList) {
       ringtoneList.push(ringtone);
     } else {
       ringtoneList = [ringtone];
     }
+
     localStorage.setItem("ringtoneList", JSON.stringify(ringtoneList));
+
+    axios.post("http://localhost:4000/ringtones/create", ringtone)
+    .then((res) => {
+      console.log("from react: ")
+      console.log(res.data)
+    }).catch((error) => {
+      console.log(error)
+    });
+
     message.success("Ringtone saved");
-  }
+  };
 
   handlePlayClick = (noteIdx) => {
     let pitch = this.state.pitches[noteIdx];
@@ -90,7 +103,7 @@ class CreateRingtonePage extends React.Component {
     if (pitch) {
       playNote(pitch, (dur) ? (1 / dur) : 0.5);
     }
-  }
+  };
 
   handlePitchChange = (e, noteIdx) => {
     let newPitches = [...this.state.pitches];
@@ -100,13 +113,13 @@ class CreateRingtonePage extends React.Component {
       let dur = this.state.durations[noteIdx];
       playNote(e, (dur) ? (1 / dur) :  0.5);
     }
-  }
+  };
 
   handleDurationChange = (e, noteIdx) => {
     let newDurations = [...this.state.durations];
     newDurations[noteIdx] = e;
     this.changeStateAndLocalStorage(null, newDurations);
-  }
+  };
 
   handleDeleteNote = (noteIdx) => {
     let newPitches = [...this.state.pitches];
@@ -114,7 +127,7 @@ class CreateRingtonePage extends React.Component {
     newPitches.splice(noteIdx, 1);
     newDurations.splice(noteIdx, 1);
     this.changeStateAndLocalStorage(newPitches, newDurations);
-  }
+  };
 
   render() {
     return (
@@ -217,7 +230,7 @@ class CreateRingtonePage extends React.Component {
         })}
       </div>
     );
-  }
+  };
 }
 
 export default CreateRingtonePage;

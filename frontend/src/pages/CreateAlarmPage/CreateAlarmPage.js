@@ -1,6 +1,8 @@
 import React from "react";
 import { Divider, Button, TimePicker, Checkbox, Radio, message } from "antd";
 import { DAYS, playRingtone } from "../../shared/utils";
+import axios from 'axios';
+
 import "./CreateAlarmPage.css"
 
 const format = "HH:mm";
@@ -21,13 +23,21 @@ class CreateAlarmPage extends React.Component {
     checkAllWeekdays: false,
     checkAllWeekend: false,
     time: null,
-    ringtoneList: JSON.parse(localStorage.getItem("ringtoneList")),
+    ringtoneList: [],
     chosenRingtone: null
   };
 
   componentDidMount = () => {
+    // clear previously selected days
     localStorage.setItem("currDays", JSON.stringify([]));
-  }
+    // load all ringtones
+    axios.get("http://localhost:4000/ringtones/")
+    .then((res) => {
+      this.setState({ ringtoneList : res.data })
+    }).catch((error) => {
+      console.log(error)
+    });
+  };
 
   updateDaysLocalStorage = (areWeekdays, days) => {
     let newDays = JSON.parse(localStorage.getItem("currDays"));
@@ -44,7 +54,7 @@ class CreateAlarmPage extends React.Component {
       newDays = newDays.filter(d => !optionsWeekend.includes(d));
     }
     localStorage.setItem("currDays", JSON.stringify(newDays))
-  }
+  };
 
   addDaysLocalStorage = (areWeekdays, days) => {
     let changed = false;
@@ -122,25 +132,34 @@ class CreateAlarmPage extends React.Component {
 
   onChangeTime = (time) => {
     this.setState({ time });
-  }
+  };
 
   onClickRingtone = rt => {
     this.setState({ chosenRingtone : rt });
     playRingtone(rt.notes);
-  }
+  };
 
   onClickSubmit = () => {
-    let schedule = JSON.parse(localStorage.getItem("schedule"));
-    let days = JSON.parse(localStorage.getItem("currDays"));
-    if (!schedule) { schedule = []; }
-    days.forEach(day => {
-      let alarm = { ringtone : this.state.chosenRingtone, day, 
-                    time : this.state.time };
-      schedule.push(alarm); // TODO: validate alarm before schedule it
-    })
-    localStorage.setItem("schedule", JSON.stringify(schedule));
+    let newAlarms = [];
+    let selectedDays = JSON.parse(localStorage.getItem("currDays"));
+    selectedDays.forEach(day => {
+      newAlarms.push({
+        ringtone : this.state.chosenRingtone,
+        day, 
+        time : this.state.time 
+      }); // TODO: validate alarm before schedule it
+    });
+
+    axios.post("http://localhost:4000/alarms/create", newAlarms)
+    .then((res) => {
+      console.log("alarm scheduled: ")
+      console.log(res.data)
+    }).catch((error) => {
+      console.log(error)
+    });
+
     message.success("Alarm scheduled");
-  }
+  };
 
   render() {
     return (

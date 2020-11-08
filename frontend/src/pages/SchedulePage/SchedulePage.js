@@ -1,14 +1,25 @@
 import React from "react";
 import { Divider, List } from "antd";
 import { playRingtone } from "../../shared/utils";
-import "./SchedulePage.css";
 import moment from "moment";
+import axios from 'axios';
+
+import "./SchedulePage.css";
 
 class SchedulePage extends React.Component {
 
   state = {
-    schedule: JSON.parse(localStorage.getItem("schedule")) || []
+    schedule: []
   };
+
+  componentDidMount = () => {
+    axios.get("http://localhost:4000/alarms/")
+    .then((res) => {
+      this.setState({ schedule : res.data })
+    }).catch((error) => {
+      console.log(error)
+    });
+  }
 
   render() {
     return (
