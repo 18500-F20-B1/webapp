@@ -18,6 +18,8 @@ const dbName = "capstone";
 const ringtoneCollectionName = "ringtones";
 const alarmCollectionName = "alarms";
 
+const { scheduleAlarms } = require("./schedule-alarms");
+
 db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (ringtoneCollection, alarmCollection) { // successCallback
   //  // get all items (use for debugging)
   //   ringtoneCollection.find().toArray(function (err, result) {
@@ -29,26 +31,21 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
 
    // << db CRUD routes >>
   server.post("/ringtones/create", (request, response) => {
-    const item = request.body;
+    let item = request.body;
     ringtoneCollection.insertOne(item, (error, result) => { // callback of insertOne
       if (error) throw error;
-      // return updated list
-      ringtoneCollection.find().toArray((_error, _result) => { // callback of find
-        if (_error) throw _error;
-          response.json(_result);
-      });
+      else response.send(result);
     });
   });
 
   server.post("/alarms/create", (request, response) => {
-    const items = request.body;
+    let items = request.body;
     alarmCollection.insertMany(items, (error, result) => { // callback of insertOne
       if (error) throw error;
-      // return updated list
-      alarmCollection.find().toArray((_error, _result) => { // callback of find
-        if (_error) throw _error;
-          response.json(_result);
-      });
+      else {
+        scheduleAlarms(items);
+        response.send(result);
+      }
     });
   });
 
@@ -56,7 +53,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     // return updated list
     alarmCollection.find().toArray((error, result) => {
       if (error) throw error;
-        response.json(result);
+      response.json(result);
     });
   });
 
@@ -64,7 +61,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     // return updated list
     ringtoneCollection.find().toArray((error, result) => {
       if (error) throw error;
-        response.json(result);
+      response.json(result);
     });
   });
 
