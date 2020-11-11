@@ -31,7 +31,7 @@ class CreateAlarmPage extends React.Component {
     // clear previously selected days
     localStorage.setItem("currDays", JSON.stringify([]));
     // load all ringtones
-    axios.get("http://localhost:4000/ringtones/")
+    axios.get("http://3.129.61.132:4000/ringtones/")
     .then((res) => {
       this.setState({ ringtoneList : res.data })
     }).catch((error) => {
@@ -150,7 +150,7 @@ class CreateAlarmPage extends React.Component {
       }); // TODO: validate alarm before schedule it
     });
 
-    axios.post("http://localhost:4000/alarms/create", newAlarms)
+    axios.post("http://3.129.61.132:4000/alarms/create", newAlarms)
     .then((res) => {
       console.log("alarm scheduled: ")
       console.log(res.data)
