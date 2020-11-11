@@ -12,7 +12,7 @@ const scheduleAlarms = (alarms) => {
     let day = getDay(alarm.day.toLowerCase());
     let schedule = `${minHr} * * ${day}`;
 
-    console.log(`Message scheduled to send at ${alarm.day} ${moment(alarm.time).format("HH mm")}`)
+    console.log(`Message scheduled to send at ${alarm.day} ${moment(alarm.time).utcOffset(480).format("HH mm")}`)
 
     cron.schedule(schedule, () => {
       send(alarm);
