@@ -8,7 +8,7 @@ const sqs = new aws.SQS();
 
 const scheduleAlarms = (alarms) => {
   alarms.forEach((alarm) => {
-    let minHr = moment(alarm.time).format("mm HH");
+    let minHr = moment(alarm.time).utcOffset(480).format("mm HH");
     let day = getDay(alarm.day.toLowerCase());
     let schedule = `${minHr} * * ${day}`;
 
