@@ -8,11 +8,11 @@ const sqs = new aws.SQS();
 
 const scheduleAlarms = (alarms) => {
   alarms.forEach((alarm) => {
-    let minHr = moment(alarm.time).utcOffset(480).format("mm HH");
+    let minHr = moment(alarm.time).utcOffset(-480).format("mm HH");
     let day = getDay(alarm.day.toLowerCase());
     let schedule = `${minHr} * * ${day}`;
 
-    console.log(`Message scheduled to send at ${alarm.day} ${moment(alarm.time).utcOffset(480).format("HH mm")}`)
+    console.log(`Message scheduled to send at ${alarm.day} ${moment(alarm.time).utcOffset(-480).format("HH mm")}`)
 
     cron.schedule(schedule, () => {
       send(alarm);
