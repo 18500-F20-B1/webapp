@@ -13,7 +13,7 @@ class SchedulePage extends React.Component {
   };
 
   componentDidMount = () => {
-    axios.get("http://3.129.61.132:4000/alarms/")
+    axios.get("http://localhost:4000/alarms/")
     .then((res) => {
       this.setState({ schedule : res.data })
     }).catch((error) => {
