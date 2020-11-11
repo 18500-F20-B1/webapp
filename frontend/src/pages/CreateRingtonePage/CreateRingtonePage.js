@@ -86,7 +86,7 @@ class CreateRingtonePage extends React.Component {
 
     localStorage.setItem("ringtoneList", JSON.stringify(ringtoneList));
 
-    axios.post("http://localhost:4000/ringtones/create", ringtone)
+    axios.post("http://3.129.61.132:4000/ringtones/create", ringtone)
     .then((res) => {
       console.log("from react: ")
       console.log(res.data)
