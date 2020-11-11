@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import "./CreateAlarmPage.css"
 
+moment.tz.setDefault("America/Los_Angeles");
+
 const format = "HH:mm";
 
 const optionsWeekdays = [

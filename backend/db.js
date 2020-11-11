@@ -7,7 +7,7 @@ const password = "18500b1";
 const dbConnectionUrl = `mongodb+srv://${user}:${password}@cluster0.qiv5v.mongodb.net/cluster0?retryWrites=true&w=majority`;
 
 function initialize(dbName, ringtoneCollectionName, alarmCollectionName, successCallback, failureCallback) {
-	MongoClient.connect(dbConnectionUrl, { 
+	MongoClient.connect(dbConnectionUrl, {
 			useUnifiedTopology : true
 		}, function (err, dbInstance) {
 		if (err) {
