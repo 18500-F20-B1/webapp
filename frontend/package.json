@@ -9,6 +9,7 @@
     "antd": "^4.7.0",
     "axios": "^0.21.0",
     "midi-sounds-react": "^1.2.54",
+    "moment-timezone": "^0.5.31",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.2.0",
