@@ -11,7 +11,9 @@ const scheduleAlarms = (alarms) => {
     let minHr = moment(alarm.time).format("mm HH");
     let day = getDay(alarm.day.toLowerCase());
     let schedule = `${minHr} * * ${day}`;
+
     console.log(`Message scheduled to send at ${alarm.day} ${moment(alarm.time).format("HH mm")}`)
+
     cron.schedule(schedule, () => {
       send(alarm);
     }, {
@@ -27,11 +29,13 @@ const send = (alarm) => {
     QueueUrl: queueUrl,
     DelaySeconds: 0
   };
+
+  console.log("Message sent to SQS");
+
   sqs.sendMessage(params, function(err, data) {
     if(err) console.log(err);
     else console.log(data);
   });
-  console.log("Message sent to SQS");
 }
 
 const getDay = (str) => {
