@@ -5,6 +5,9 @@ import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './index.css';
+import moment from 'moment-timezone';
+
+moment.tz.setDefault("America/Los_Angeles");
 
 ReactDOM.render(
   <Router>

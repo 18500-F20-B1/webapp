@@ -2,11 +2,8 @@ import React from "react";
 import { Divider, Button, TimePicker, Checkbox, Radio, message } from "antd";
 import { DAYS, playRingtone } from "../../shared/utils";
 import axios from 'axios';
-import moment from "moment";
 
 import "./CreateAlarmPage.css"
-
-moment.tz.setDefault("America/Los_Angeles");
 
 const format = "HH:mm";
 
