@@ -118,6 +118,7 @@ class CreateRingtonePage extends React.Component {
   handleDurationChange = (e, noteIdx) => {
     let newDurations = [...this.state.durations];
     newDurations[noteIdx] = e * 1 / 64;
+    console.log(e);
     this.changeStateAndLocalStorage(null, newDurations);
   };
 
