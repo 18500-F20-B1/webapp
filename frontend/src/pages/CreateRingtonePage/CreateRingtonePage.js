@@ -15,7 +15,7 @@ const durationOptions = {
   "1/8": 8,
   "1/4": 16,
   "1/2": 32,
-  "1": 64,
+  "1": 64
 };
 
 class CreateRingtonePage extends React.Component {
