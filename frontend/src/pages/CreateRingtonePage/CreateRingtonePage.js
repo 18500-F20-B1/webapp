@@ -74,7 +74,7 @@ class CreateRingtonePage extends React.Component {
     this.state.pitches.forEach((p, i) =>{
       ringtone.notes.push(p);
       let d = this.state.durations[i]
-      ringtone.notes.push(1/d); // e.g. need to store 2 as 1/2 s
+      ringtone.notes.push(d); // e.g. need to store 2s as 1/2 s
     });
 
     let ringtoneList = JSON.parse(localStorage.getItem("ringtoneList"));
