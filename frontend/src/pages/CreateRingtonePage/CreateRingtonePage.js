@@ -9,13 +9,13 @@ import "./CreateRingtonePage.css";
 
 const { Option } = Select;
 const durationOptions = {
-  // "1/64": 64, // too fast, can't hear the note when previewing
-  // "1/32": 32,
-  "1/16": 16,
+  // "1/64": 1, // too fast, can't hear the note when previewing
+  // "1/32": 2,
+  "1/16": 4,
   "1/8": 8,
-  "1/4": 4,
-  "1/2": 2,
-  "1": 1,
+  "1/4": 16,
+  "1/2": 32,
+  "1": 64,
 };
 
 class CreateRingtonePage extends React.Component {
