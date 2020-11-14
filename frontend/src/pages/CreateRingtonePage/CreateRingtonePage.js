@@ -101,7 +101,7 @@ class CreateRingtonePage extends React.Component {
     let pitch = this.state.pitches[noteIdx];
     let dur = this.state.durations[noteIdx];
     if (pitch) {
-      playNote(pitch, (dur) ? (1 / 64 * dur) : 0.5);
+      playNote(pitch, dur ? dur : 0.5);
     }
   };
 
@@ -111,13 +111,13 @@ class CreateRingtonePage extends React.Component {
     this.changeStateAndLocalStorage(newPitches);
     if (e !== null) {
       let dur = this.state.durations[noteIdx];
-      playNote(e, (dur) ? (1 / 64 * dur) :  0.5);
+      playNote(e, dur ? dur :  0.5);
     }
   };
 
   handleDurationChange = (e, noteIdx) => {
     let newDurations = [...this.state.durations];
-    newDurations[noteIdx] = e;
+    newDurations[noteIdx] = e * 1 / 64;
     this.changeStateAndLocalStorage(null, newDurations);
   };
 
