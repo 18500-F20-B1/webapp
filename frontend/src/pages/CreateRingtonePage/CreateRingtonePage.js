@@ -64,7 +64,7 @@ class CreateRingtonePage extends React.Component {
 
   handlePreview = () => {
     let durations = [...this.state.durations];
-    durations.forEach((e, idx) => durations[idx] = 1 / e);
+    durations.forEach((e, idx) => durations[idx] = e / 64);
     testPlayRingtone(this.state.pitches, durations);
   };
 
@@ -118,7 +118,6 @@ class CreateRingtonePage extends React.Component {
   handleDurationChange = (e, noteIdx) => {
     let newDurations = [...this.state.durations];
     newDurations[noteIdx] = e / 64;
-    console.log(e);
     this.changeStateAndLocalStorage(null, newDurations);
   };
 
