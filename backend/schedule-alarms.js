@@ -2,8 +2,7 @@ const cron = require("node-cron");
 const moment = require("moment");
 
 const aws = require('aws-sdk');
-const queueUrl = "https://sqs.us-east-2.amazonaws.com/248059054815/MyFirstQueue";
-aws.config.loadFromPath(__dirname + '/config.json');
+const queueUrl = "https://sqs.us-east-2.amazonaws.com/350205516545/AlarmQueue.fifo";
 const sqs = new aws.SQS();
 
 const scheduleAlarms = (alarms) => {
