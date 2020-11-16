@@ -4,13 +4,17 @@
 const express = require("express");
 const server = express();
 
+const path = require("path");
+// Serve static files
+server.use(express.static(path.join(__dirname, "../frontend/build")));
+
 const cors = require("cors");
 server.use(cors());
 
 const body_parser = require("body-parser");
 server.use(body_parser.json()); // parse JSON (application/json content-type)
 
-const port = 4000;
+const port = 4000
 
 // << db setup >>
 const db = require("./db");
