@@ -31,6 +31,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
 
    // << db CRUD routes >>
   server.post("/ringtones/create", (request, response) => {
+    console.log("POST /ringtones/create");
     let item = request.body;
     ringtoneCollection.insertOne(item, (error, result) => { // callback of insertOne
       if (error) throw error;
@@ -39,6 +40,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   });
 
   server.post("/alarms/create", (request, response) => {
+    console.log("POST /alarms/create");
     let items = request.body;
     alarmCollection.insertMany(items, (error, result) => { // callback of insertOne
       if (error) throw error;
@@ -50,6 +52,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   });
 
   server.get("/alarms", (request, response) => {
+    console.log("GET /alarms");
     // return updated list
     alarmCollection.find().toArray((error, result) => {
       if (error) throw error;
@@ -58,6 +61,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   });
 
   server.get("/ringtones", (request, response) => {
+    console.log("GET /ringtones");
     // return updated list
     ringtoneCollection.find().toArray((error, result) => {
       if (error) throw error;
