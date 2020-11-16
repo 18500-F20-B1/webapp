@@ -1,6 +1,6 @@
 import React from "react";
 import { Divider, Button, TimePicker, Checkbox, Radio, message } from "antd";
-import { DAYS, playRingtone } from "../../shared/utils";
+import { DATABASE_URL, DAYS, playRingtone } from "../../shared/utils";
 import axios from 'axios';
 
 import "./CreateAlarmPage.css"
@@ -31,7 +31,7 @@ class CreateAlarmPage extends React.Component {
     // clear previously selected days
     localStorage.setItem("currDays", JSON.stringify([]));
     // load all ringtones
-    axios.get("http://3.129.61.132:4000/ringtones/")
+    axios.get(`${DATABASE_URL}/ringtones`)
     .then((res) => {
       this.setState({ ringtoneList : res.data })
     }).catch((error) => {
@@ -150,7 +150,7 @@ class CreateAlarmPage extends React.Component {
       }); // TODO: validate alarm before schedule it
     });
 
-    axios.post("http://3.129.61.132:4000/alarms/create", newAlarms)
+    axios.post(`${DATABASE_URL}/alarms/create`, newAlarms)
     .then((res) => {
       console.log("alarm scheduled: ")
       console.log(res.data)

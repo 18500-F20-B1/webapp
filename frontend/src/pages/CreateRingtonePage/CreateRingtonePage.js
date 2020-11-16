@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, Select, Button, Input, message } from "antd";
 import { RightCircleOutlined, PlusOutlined, DeleteOutlined, SaveOutlined,
   CaretRightOutlined } from "@ant-design/icons";
-import { playNote, testPlayRingtone } from "../../shared/utils";
+import { DATABASE_URL, playNote, testPlayRingtone } from "../../shared/utils";
 import axios from 'axios';
 
 import "./CreateRingtonePage.css";
@@ -86,7 +86,7 @@ class CreateRingtonePage extends React.Component {
 
     localStorage.setItem("ringtoneList", JSON.stringify(ringtoneList));
 
-    axios.post("http://3.129.61.132:4000/ringtones/create", ringtone)
+    axios.post(`${DATABASE_URL}/ringtones/create`, ringtone)
     .then((res) => {
       console.log("from react: ")
       console.log(res.data)
