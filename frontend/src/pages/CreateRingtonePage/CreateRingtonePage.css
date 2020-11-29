@@ -34,3 +34,13 @@
 .one-note-container {
   margin-bottom: 1%;
 }
+
+.ringtoneEditor, .noteEditor {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.checkRingtone {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

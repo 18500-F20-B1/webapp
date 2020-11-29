@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Select, Button, Input, message } from "antd";
+import { Divider, Select, Button, Input, message, Form } from "antd";
 import { RightCircleOutlined, PlusOutlined, DeleteOutlined, SaveOutlined,
   CaretRightOutlined } from "@ant-design/icons";
 import { DATABASE_URL, playNote, playRingtone } from "../../shared/utils";
@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import "./CreateRingtonePage.css";
 
+const { TextArea } = Input;
 const { Option } = Select;
 const durationOptions = {
   // "1/64": 1, // too fast, can't hear the note when previewing
@@ -65,6 +66,50 @@ const PitchSelecter = ({ pitch, noteIdx, onChangePitch }) => {
   );
 }
 
+const NoteEditor = ({
+  pitches, durations, onPlayNote, onChangePitch, onChangeDuration, onDeleteNote }
+) => {
+  return (
+    <div className="noteEditor">
+      {pitches.map((pitch, noteIdx) => {
+        return (
+          <div key={noteIdx} className="one-note-container">
+            <Divider>
+              Note # {noteIdx + 1}
+            </Divider>
+
+            {/* Note Player */}
+            <Button className="play-note-button" 
+              onClick={() => onPlayNote(noteIdx)}>
+              <RightCircleOutlined />
+            </Button>
+
+            <PitchSelecter pitch={pitch} noteIdx={noteIdx} onChangePitch={onChangePitch} />
+
+            {/* Duration Selector */}
+            <span className="duration-select-span">
+              <label>Duration(in seconds): </label>
+              <Select className="duration-select" 
+                value={durations[noteIdx]}
+                onChange={e => onChangeDuration(e, noteIdx)}>
+                {Object.keys(durationOptions).map((dKey, idx)=> {
+                  return (
+                    <Option key={idx} value={durationOptions[dKey]}>{dKey}</Option>
+                )})}          
+              </Select>
+            </span>
+
+            <Button type="primary" danger
+              onClick={() => onDeleteNote(noteIdx)}>
+              <DeleteOutlined />
+            </Button>
+
+          </div>
+        )
+      })}
+  </div>
+  );
+}
 
 class CreateRingtonePage extends React.Component {
   constructor(props) {
@@ -73,7 +118,8 @@ class CreateRingtonePage extends React.Component {
     this.state = {
       pitches: [], // [pitch1, pitch2, ...]
       durations: [], // [duration1, duration2, ...]
-      name: "" // name of the ringtone being currently edited
+      name: "", // name of the ringtone being currently edited
+      showNoteEditor: true
     };
   }
   
@@ -121,23 +167,46 @@ class CreateRingtonePage extends React.Component {
     playRingtone(notes);
   };
 
-  onSaveRingtone = () => {
-    let ringtone = { notes: [], name: this.state.name };
-    this.state.pitches.forEach((p, i) =>{
-      ringtone.notes.push(p);
-      let d = this.state.durations[i]
-      ringtone.notes.push(d);
-    });
+  onSaveRingtone = async () => {
+    const res = await this.isNameValid(this.state.name);
+    if (res) {
+      let ringtone = { notes: [], name: this.state.name };
+      this.state.pitches.forEach((p, i) =>{
+        ringtone.notes.push(p);
+        let d = this.state.durations[i]
+        ringtone.notes.push(d);
+      });
 
-    axios.post(`${DATABASE_URL}/ringtones/create`, ringtone)
-    .then((res) => {
-      console.log("Ringtone saved to backend ");
-      console.log(ringtone);
-    }).catch((error) => {
+      axios.post(`${DATABASE_URL}/ringtones/create`, ringtone)
+      .then((res) => {
+        console.log("Ringtone saved to backend");
+        console.log(ringtone);
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      message.success("Ringtone saved.");   
+    } else {
+      message.error("Name already exists; Use a different one.");
+    }
+  };
+
+  isNameValid = async (name) => {
+    try {
+      const res = await axios.get(`${DATABASE_URL}/ringtones`);
+      return res.data.filter(ringtone => ringtone.name === name).length === 0;
+    } catch (error) {
       console.log(error);
-    });
+      return false;
+    }
+  };
 
-    message.success("Ringtone saved");
+  onSwitchEditMode = () => {
+    this.setState(prevState => {
+      return { 
+        ...prevState,
+        showNoteEditor: !prevState.showNoteEditor }
+    })
   };
 
   onPlayNote = (noteIdx) => {
@@ -173,6 +242,32 @@ class CreateRingtonePage extends React.Component {
     this.changeDurations(newDurations);
   };
 
+  // load ringtone to local store, so it appears in the other editor too
+  loadRingtone = (values) => {
+    let input = values.input;
+    if (input) {
+      let durations = [];
+      let pitches = [];
+      let inputArr = input.split(" ");
+      console.log(inputArr);
+      for (let i = 0; i < inputArr.length; i ++) {
+        let num = inputArr[i];
+        if (!isNaN(num)) {
+          if (i % 2) {
+            durations.push(parseInt(num));
+          } else {
+            pitches.push(parseInt(num));
+          }
+        } else {
+          message.error("There is a formatting issue with your input.");
+          return;
+        }
+      }
+      this.setState({ pitches, durations });
+      message.success("Ringtone loaded.")
+    }
+  };
+
   render() {
     return (
       <div className="create-ringtone-page-container">
@@ -184,7 +279,7 @@ class CreateRingtonePage extends React.Component {
             />
           </div>
           <Button type="primary" block className="add-note-button" 
-            disabled={this.state.pitches.length >= 16}
+            disabled={this.state.pitches.length >= 16 || !this.state.showNoteEditor}
             onClick={this.onAddNote}>
             <PlusOutlined />Add a Note
           </Button>
@@ -205,42 +300,25 @@ class CreateRingtonePage extends React.Component {
           </Button>
           <p className="help-text">* You can add up to 16 notes</p>
         </div>
-        {this.state.pitches.map((pitch, noteIdx) => {
-          return (
-            <div key={noteIdx} className="one-note-container">
-              <Divider>
-                Note # {noteIdx + 1}
-              </Divider>
-
-              {/* Note Player */}
-              <Button className="play-note-button" 
-                onClick={() => this.onPlayNote(noteIdx)}>
-                <RightCircleOutlined />
-              </Button>
-
-              <PitchSelecter pitch={pitch} noteIdx={noteIdx} onChangePitch={this.onChangePitch} />
-
-              {/* Duration Selector */}
-              <span className="duration-select-span">
-                <label>Duration(in seconds): </label>
-                <Select className="duration-select" 
-                  value={this.state.durations[noteIdx]}
-                  onChange={e => this.onChangeDuration(e, noteIdx)}>
-                  {Object.keys(durationOptions).map((dKey, idx)=> {
-                    return (
-                      <Option key={idx} value={durationOptions[dKey]}>{dKey}</Option>
-                  )})}          
-                </Select>
-              </span>
-
-              <Button type="primary" danger
-                onClick={() => this.onDeleteNote(noteIdx)}>
-                <DeleteOutlined />
-              </Button>
-
+        <Button onClick={this.onSwitchEditMode}>Switch edit mode</Button>
+        {this.state.showNoteEditor 
+          ? <NoteEditor pitches={this.state.pitches} durations={this.state.durations}
+            onChangePitch={this.onChangePitch} onChangeDuration={this.onChangeDuration}
+            onDeleteNote={this.onDeleteNote} onPlayNote={this.onPlayNote} />
+          : <div className="ringtoneEditor">
+              <Divider>Enter the whole ringtone as "pitch1 duration1 pitch2 duration2 ..."</Divider>
+              <Form name="basic" onFinish={this.loadRingtone}>
+                <Form.Item name="input">
+                  <TextArea className="ringtoneEditorInput" rows={5}></TextArea>
+                </Form.Item>
+                <Form.Item>
+                  <Button className="checkRingtone" htmlType="submit">
+                    Load Ringtone
+                  </Button>
+                </Form.Item>      
+              </Form>
             </div>
-          )
-        })}
+        }
       </div>
     );
   };

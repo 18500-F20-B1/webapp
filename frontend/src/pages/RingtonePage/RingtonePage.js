@@ -1,6 +1,6 @@
 import React from "react";
 import axios from 'axios';
-import { Row, Col, Divider, Button, message } from "antd";
+import { Divider, Button, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { DATABASE_URL, playRingtone } from "../../shared/utils";
 
@@ -15,7 +15,7 @@ class RingtonePage extends React.Component {
     };
   }
 
-  componentDidMount = () => {
+  getRingtones() {
     // load all ringtones
     axios.get(`${DATABASE_URL}/ringtones`)
     .then((res) => {
@@ -23,17 +23,21 @@ class RingtonePage extends React.Component {
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  componentDidMount = () => {
+    this.getRingtones();
   };
 
   deleteRingtone = (name) => {
-    axios.delete(`${DATABASE_URL}/ringtones:${name}`, { data: { name } })
+    axios.delete(`${DATABASE_URL}/ringtones/${name}`)
     .then(_ => {
-      message.success("Ringtone deleted");
+      message.success("Ringtone deleted.");
+      this.getRingtones();
     }).catch((error) => {
       console.log(error);
     });    
   };
-
   
   render() {
     return (
@@ -41,24 +45,20 @@ class RingtonePage extends React.Component {
         <Divider orientation="left">
           Ringtones
         </Divider>
-        <div className="ringtone-form">        
-          {(this.state.ringtones && this.state.ringtones.length > 0) 
-            ? <div>
-                {this.state.ringtones.map((rt, idx) => {
-                  return (
-                    <Row key={idx} className="ringtone-container">
-                      <Col>
-                        <Button value={rt.name} onClick={() => playRingtone(rt.notes)}>{rt.name}</Button>
-                      </Col>
-                      <Col>
-                        <Button onClick={() => this.deleteRingtone(rt.name)}><DeleteOutlined /></Button>
-                      </Col>
-                    </Row>
-                )})}
-              </div>
-            : <p>No ringtones detected</p>
-          }
-        </div>
+        {(this.state.ringtones && this.state.ringtones.length > 0) 
+          ? <div className="ringtonesContainer">
+              {this.state.ringtones.map((rt, idx) => {
+                return (
+                  <span key={idx} className="oneRingtoneContainer">
+                    <Button value={rt.name} onClick={() => playRingtone(rt.notes)}
+                      type="dashed" size="large" className="ringtoneName">{rt.name}</Button>
+                    <Button onClick={() => this.deleteRingtone(rt.name)}
+                      type="primary" size="large" className="deleteRingtone" danger><DeleteOutlined /></Button>
+                  </span>
+              )})}
+            </div>
+          : <p>No ringtones detected</p>
+        }
       </div>
     );
   }

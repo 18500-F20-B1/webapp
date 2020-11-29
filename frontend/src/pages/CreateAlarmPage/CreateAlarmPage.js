@@ -161,7 +161,7 @@ class CreateAlarmPage extends React.Component {
       console.log(error)
     });
 
-    message.success("Alarm scheduled");
+    message.success("Alarm scheduled.");
   };
 
   render() {

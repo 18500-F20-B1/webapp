@@ -1,6 +1,6 @@
 TODO:
-- [ ] ringtone deletion + page
-- [ ] import by MIDI
+- [x] ringtone deletion + page
+- [v] import by MIDI
 - [ ] CI/CD
 - [ ] auto detect timezone
 - [ ] database migration
