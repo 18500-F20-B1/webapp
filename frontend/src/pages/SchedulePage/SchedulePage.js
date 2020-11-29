@@ -1,6 +1,6 @@
 import React from "react";
 import { Divider, List } from "antd";
-import { playRingtone } from "../../shared/utils";
+import { DATABASE_URL, playRingtone } from "../../shared/utils";
 import moment from "moment";
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ class SchedulePage extends React.Component {
   };
 
   componentDidMount = () => {
-    axios.get("http://3.129.61.132:4000/alarms/")
+    axios.get(`${DATABASE_URL}/alarms`)
     .then((res) => {
       this.setState({ schedule : res.data })
     }).catch((error) => {
