@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, Select, Button, Input, message } from "antd";
 import { RightCircleOutlined, PlusOutlined, DeleteOutlined, SaveOutlined,
   CaretRightOutlined } from "@ant-design/icons";
-import { DATABASE_URL, playNote, testPlayRingtone } from "../../shared/utils";
+import { DATABASE_URL, playNote, playRingtone } from "../../shared/utils";
 import axios from 'axios';
 
 import "./CreateRingtonePage.css";
@@ -18,58 +18,110 @@ const durationOptions = {
   "1": 64
 };
 
-class CreateRingtonePage extends React.Component {
+const getNoteLetter = (idx) => {
+  if (idx % 12 === 0) {
+    return "G";
+  } else if (idx % 12 === 1) {
+    return "G#";
+  } else if (idx % 12 === 2) {
+    return "A";
+  } else if (idx % 12 === 3) {
+    return "A#";
+  } else if (idx % 12 === 4) {
+    return "B";
+  } else if (idx % 12 === 5) {
+    return "C";
+  } else if (idx % 12 === 6) {
+    return "C#";
+  } else if (idx % 12 === 7) {
+    return "D";
+  } else if (idx % 12 === 8) {
+    return "D#";
+  } else if (idx % 12 === 9) {
+    return "E";
+  } else if (idx % 12 === 10) {
+    return "F";
+  } else {
+    return "F#";
+  }
+}
 
-  state = {
-    pitches: [], // [pitch1, pitch2, ...]
-    durations: [], // [duration1, duration2, ...]
-    name: "" // name of the ringtone being currently edited
-  };
+const PitchSelecter = ({ pitch, noteIdx, onChangePitch }) => {
+  return (
+    <span className="pitch-select-span">
+      <label>Pitch: </label>
+      <Select className="pitch-select" 
+        value={pitch}
+        onChange={e => onChangePitch(e, noteIdx)}>
+        {/* 60 notes = 5 octaves */}
+        {[...Array(60)].map((_, idx) => {
+          let octave = Math.floor(idx / 12) - 2;
+          let label = `${getNoteLetter(idx)} (${octave})`;
+          return (
+            <Option key={idx} value={31 + idx}>{label}</Option>
+        )})}
+      </Select>
+    </span>
+  );
+}
+
+
+class CreateRingtonePage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      pitches: [], // [pitch1, pitch2, ...]
+      durations: [], // [duration1, duration2, ...]
+      name: "" // name of the ringtone being currently edited
+    };
+  }
   
   componentDidMount() {
     let storedPitches = JSON.parse(localStorage.getItem("currPitches"));
-    let storedDurations = JSON.parse(localStorage.getItem("currDurations"));
     let pitches = (storedPitches) ? storedPitches : [];
+    let storedDurations = JSON.parse(localStorage.getItem("currDurations"));
     let durations = (storedDurations) ? storedDurations : [];
     let name = localStorage.getItem("currName");
     this.setState({ pitches, durations, name });
   };
 
-  changeStateAndLocalStorage(pitches, durations, name) {
-    if (pitches) {
-      this.setState({ pitches });
-      localStorage.setItem("currPitches", JSON.stringify(pitches));
-    }
-    if (durations) {
-      this.setState({ durations });
-      localStorage.setItem("currDurations", JSON.stringify(durations));
-    }
-    if (name) {
-      this.setState({ name });
-      localStorage.setItem("currName", name);
-    }
-  };
+  changePitches(pitches) {
+    this.setState({ pitches });
+    localStorage.setItem("currPitches", JSON.stringify(pitches));
+  }
 
-  handleChangeName = (e) => {
-    this.changeStateAndLocalStorage(null, null, e.target.value)
+  changeDurations(durations) {
+    this.setState({ durations });
+    localStorage.setItem("currDurations", JSON.stringify(durations));
+  }
+
+  changeName(name) {
+    this.setState({ name });
+    localStorage.setItem("currName", name);
+  }
+
+  onChangeName = (e) => {
+    this.changeName(e.target.value);
   };
   
-  handleAddNote = () => {
-    let newPitches = [...this.state.pitches];
-    let newDurations = [...this.state.durations];
-    newPitches.push(null);
-    newDurations.push(null);
-    this.changeStateAndLocalStorage(newPitches, newDurations);
+  onAddNote = () => {
+    let newPitches = [...this.state.pitches, null];
+    let newDurations = [...this.state.durations, null];
+    this.changePitches(newPitches);
+    this.changeDurations(newDurations);
   };
 
-  handlePreview = () => {
-    let durations = [...this.state.durations];
-    durations.forEach((e, idx) => durations[idx] = e / 64);
-    testPlayRingtone(this.state.pitches, durations);
+  onPlayRingtone = () => {
+    let notes = [];
+    this.state.durations.forEach((d, idx) => {
+      notes.push(this.state.pitches[idx]);
+      notes.push(d); // convert durations back into seconds
+    })
+    playRingtone(notes);
   };
 
-  handleSubmit = () => {
-    // save ringtone in local storage
+  onSaveRingtone = () => {
     let ringtone = { notes: [], name: this.state.name };
     this.state.pitches.forEach((p, i) =>{
       ringtone.notes.push(p);
@@ -77,89 +129,81 @@ class CreateRingtonePage extends React.Component {
       ringtone.notes.push(d);
     });
 
-    let ringtoneList = JSON.parse(localStorage.getItem("ringtoneList"));
-    if (ringtoneList) {
-      ringtoneList.push(ringtone);
-    } else {
-      ringtoneList = [ringtone];
-    }
-
-    localStorage.setItem("ringtoneList", JSON.stringify(ringtoneList));
-
     axios.post(`${DATABASE_URL}/ringtones/create`, ringtone)
     .then((res) => {
-      console.log("from react: ")
-      console.log(res.data)
+      console.log("Ringtone saved to backend ");
+      console.log(ringtone);
     }).catch((error) => {
-      console.log(error)
+      console.log(error);
     });
 
     message.success("Ringtone saved");
   };
 
-  handlePlayClick = (noteIdx) => {
+  onPlayNote = (noteIdx) => {
     let pitch = this.state.pitches[noteIdx];
     let dur = this.state.durations[noteIdx];
     if (pitch) {
-      playNote(pitch, dur ? dur : 0.5);
+      playNote(pitch, dur ? dur : 32);
     }
   };
 
-  handlePitchChange = (e, noteIdx) => {
+  onChangePitch = (e, noteIdx) => {
     let newPitches = [...this.state.pitches];
     newPitches[noteIdx] = e;
-    this.changeStateAndLocalStorage(newPitches);
+    this.changePitches(newPitches);
     if (e !== null) {
       let dur = this.state.durations[noteIdx];
-      playNote(e, dur ? dur :  0.5);
+      playNote(e, dur ? dur :  32);
     }
   };
 
-  handleDurationChange = (e, noteIdx) => {
+  onChangeDuration = (e, noteIdx) => {
     let newDurations = [...this.state.durations];
-    newDurations[noteIdx] = e / 64;
-    this.changeStateAndLocalStorage(null, newDurations);
+    newDurations[noteIdx] = e;
+    this.changeDurations(newDurations);
   };
 
-  handleDeleteNote = (noteIdx) => {
+  onDeleteNote = (noteIdx) => {
     let newPitches = [...this.state.pitches];
     let newDurations = [...this.state.durations];
     newPitches.splice(noteIdx, 1);
     newDurations.splice(noteIdx, 1);
-    this.changeStateAndLocalStorage(newPitches, newDurations);
+    this.changePitches(newPitches);
+    this.changeDurations(newDurations);
   };
 
   render() {
     return (
       <div className="create-ringtone-page-container">
         <div className="add-note-container">
-          <p>You can add up to 16 notes</p>
           <div>
-            <label className="name-label">Give it a name: </label>
+            <label className="name-label">Ringtone name: </label>
             <Input value={this.state.name} className="name-input" placeholder="Sunrise" allowClear
-              onChange={this.handleChangeName}
+              onChange={this.onChangeName}
             />
           </div>
           <Button type="primary" block className="add-note-button" 
             disabled={this.state.pitches.length >= 16}
-            onClick={this.handleAddNote}>
+            onClick={this.onAddNote}>
             <PlusOutlined />Add a Note
           </Button>
           <Button type="primary" block className="preview-button" 
             disabled={this.state.pitches.length <= 0
                       || this.state.pitches.some(e => !e)
                       || this.state.durations.some(e => !e)}
-            onClick={this.handlePreview}>
+            onClick={this.onPlayRingtone}>
             <CaretRightOutlined />Preview Ringtone
           </Button>
-          <Button type="primary" block 
+          <Button type="primary" block className="save-button"
             disabled={this.state.pitches.length <= 0
                       || this.state.pitches.some(e => !e)
                       || this.state.durations.some(e => !e)
                       || !this.state.name}
-            onClick={this.handleSubmit}>
+            onClick={this.onSaveRingtone}>
             <SaveOutlined />Save Ringtone
           </Button>
+          <p className="help-text">* You can add up to 16 notes</p>
         </div>
         {this.state.pitches.map((pitch, noteIdx) => {
           return (
@@ -167,64 +211,33 @@ class CreateRingtonePage extends React.Component {
               <Divider>
                 Note # {noteIdx + 1}
               </Divider>
+
+              {/* Note Player */}
               <Button className="play-note-button" 
-                onClick={() => this.handlePlayClick(noteIdx)}>
+                onClick={() => this.onPlayNote(noteIdx)}>
                 <RightCircleOutlined />
               </Button>
-              <span className="pitch-select-span">
-                <label>Pitch: </label>
-                <Select className="pitch-select" 
-                  value={pitch}
-                  onChange={e => this.handlePitchChange(e, noteIdx)}>
-                  {/* 60 notes = 5 octaves */}
-                  {[...Array(60)].map((_, idx) => {
-                    let label;
-                    let octave = Math.floor(idx / 12) - 2;
-                    if (idx % 12 === 0) {
-                      label = `G (${octave})`;
-                    } else if (idx % 12 === 1) {
-                      label = `G# (${octave})`;
-                    } else if (idx % 12 === 2) {
-                      label = `A (${octave})`;
-                    } else if (idx % 12 === 3) {
-                      label = `A# (${octave})`;
-                    } else if (idx % 12 === 4) {
-                      label = `B (${octave})`;
-                    } else if (idx % 12 === 5) {
-                      label = `C (${octave})`;
-                    } else if (idx % 12 === 6) {
-                      label = `C# (${octave})`;
-                    } else if (idx % 12 === 7) {
-                      label = `D (${octave})`;
-                    } else if (idx % 12 === 8) {
-                      label = `D# (${octave})`;
-                    } else if (idx % 12 === 9) {
-                      label = `E (${octave})`;
-                    } else if (idx % 12 === 10) {
-                      label = `F (${octave})`;
-                    } else {
-                      label = `F# (${octave})`;
-                    }
-                    return (
-                      <Option key={idx} value={31 + idx}>{label}</Option>
-                  )})}
-                </Select>
-              </span>
+
+              <PitchSelecter pitch={pitch} noteIdx={noteIdx} onChangePitch={this.onChangePitch} />
+
+              {/* Duration Selector */}
               <span className="duration-select-span">
                 <label>Duration(in seconds): </label>
                 <Select className="duration-select" 
                   value={this.state.durations[noteIdx]}
-                  onChange={e => this.handleDurationChange(e, noteIdx)}>
+                  onChange={e => this.onChangeDuration(e, noteIdx)}>
                   {Object.keys(durationOptions).map((dKey, idx)=> {
                     return (
                       <Option key={idx} value={durationOptions[dKey]}>{dKey}</Option>
                   )})}          
                 </Select>
               </span>
+
               <Button type="primary" danger
-                onClick={() => this.handleDeleteNote(noteIdx)}>
+                onClick={() => this.onDeleteNote(noteIdx)}>
                 <DeleteOutlined />
               </Button>
+
             </div>
           )
         })}

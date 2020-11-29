@@ -1,7 +1,7 @@
 import React from "react";
+import axios from 'axios';
 import { Divider, Button, TimePicker, Checkbox, Radio, message } from "antd";
 import { DATABASE_URL, DAYS, playRingtone } from "../../shared/utils";
-import axios from 'axios';
 
 import "./CreateAlarmPage.css"
 
@@ -14,18 +14,21 @@ const optionsWeekdays = [
 const optionsWeekend = [ DAYS.saturday, DAYS.sunday ];
 
 class CreateAlarmPage extends React.Component {
+  constructor(props) {
+    super(props);
 
-  state = {
-    weekdayCheckedList: [],
-    weekendCheckedList: [],
-    checkSomeWeekdays: false,
-    checkSomeWeekend: false,
-    checkAllWeekdays: false,
-    checkAllWeekend: false,
-    time: null,
-    ringtoneList: [],
-    chosenRingtone: null
-  };
+    this.state = {
+      weekdayCheckedList: [],
+      weekendCheckedList: [],
+      checkSomeWeekdays: false,
+      checkSomeWeekend: false,
+      checkAllWeekdays: false,
+      checkAllWeekend: false,
+      time: null,
+      ringtones: [],
+      chosenRingtone: null
+    };
+  }
 
   componentDidMount = () => {
     // clear previously selected days
@@ -33,13 +36,13 @@ class CreateAlarmPage extends React.Component {
     // load all ringtones
     axios.get(`${DATABASE_URL}/ringtones`)
     .then((res) => {
-      this.setState({ ringtoneList : res.data })
+      this.setState({ ringtones : res.data });
     }).catch((error) => {
-      console.log(error)
+      console.log(error);
     });
   };
 
-  updateDaysLocalStorage = (areWeekdays, days) => {
+  changeSelectedDays = (areWeekdays, days) => {
     let newDays = JSON.parse(localStorage.getItem("currDays"));
     if (!newDays) { 
       newDays = []; 
@@ -56,7 +59,7 @@ class CreateAlarmPage extends React.Component {
     localStorage.setItem("currDays", JSON.stringify(newDays))
   };
 
-  addDaysLocalStorage = (areWeekdays, days) => {
+  addToSelectedDays = (areWeekdays, days) => {
     let changed = false;
     let newDays = JSON.parse(localStorage.getItem("currDays"));
     if (!newDays) { newDays = []; }
@@ -90,7 +93,7 @@ class CreateAlarmPage extends React.Component {
       checkSomeWeekdays: !!weekdayCheckedList.length && weekdayCheckedList.length < optionsWeekdays.length,
       checkAllWeekdays: weekdayCheckedList.length === optionsWeekdays.length,
     });
-    this.addDaysLocalStorage(true, weekdayCheckedList);
+    this.addToSelectedDays(true, weekdayCheckedList);
   };
 
   onChangeSingleWeekend = weekendCheckedList => {
@@ -99,7 +102,7 @@ class CreateAlarmPage extends React.Component {
       checkSomeWeekend: !!weekendCheckedList.length && weekendCheckedList.length < optionsWeekend.length,
       checkAllWeekend: weekendCheckedList.length === optionsWeekend.length,
     });
-    this.addDaysLocalStorage(false, weekendCheckedList);
+    this.addToSelectedDays(false, weekendCheckedList);
   };
 
   onChangeAllWeekdays = e => {
@@ -110,9 +113,9 @@ class CreateAlarmPage extends React.Component {
     });
 
     if (e.target.checked) {
-      this.updateDaysLocalStorage(true, optionsWeekdays);
+      this.changeSelectedDays(true, optionsWeekdays);
     } else {
-      this.updateDaysLocalStorage(true, []);
+      this.changeSelectedDays(true, []);
     }
   };
 
@@ -124,9 +127,9 @@ class CreateAlarmPage extends React.Component {
     });
 
     if (e.target.checked) {
-      this.updateDaysLocalStorage(false, optionsWeekend);
+      this.changeSelectedDays(false, optionsWeekend);
     } else {
-      this.updateDaysLocalStorage(false, []);
+      this.changeSelectedDays(false, []);
     }
   };
 
@@ -134,12 +137,12 @@ class CreateAlarmPage extends React.Component {
     this.setState({ time });
   };
 
-  onClickRingtone = rt => {
+  onPlayRingtone = rt => {
     this.setState({ chosenRingtone : rt });
     playRingtone(rt.notes);
   };
 
-  onClickSubmit = () => {
+  onSaveAlarm = () => {
     let newAlarms = [];
     let selectedDays = JSON.parse(localStorage.getItem("currDays"));
     selectedDays.forEach(day => {
@@ -207,10 +210,10 @@ class CreateAlarmPage extends React.Component {
           Set a Ringtone
         </Divider>
         <div className="ringtone-form">          
-          {(this.state.ringtoneList && this.state.ringtoneList.length > 0) 
-            ? <Radio.Group buttonStyle="solid">{this.state.ringtoneList.map((rt, idx) => {
+          {(this.state.ringtones && this.state.ringtones.length > 0) 
+            ? <Radio.Group buttonStyle="solid">{this.state.ringtones.map((rt, idx) => {
                 return (
-                  <Radio.Button key={idx} value={rt.name} onClick={() => this.onClickRingtone(rt)}>{rt.name}</Radio.Button>
+                  <Radio.Button key={idx} value={rt.name} onClick={() => this.onPlayRingtone(rt)}>{rt.name}</Radio.Button>
                 )})}
               </Radio.Group>
             : <p>No ringtones detected</p>}
@@ -219,7 +222,7 @@ class CreateAlarmPage extends React.Component {
           <Button type="primary" size="large" 
             disabled={!this.state.chosenRingtone || !(this.state.weekdayCheckedList 
                       || this.state.weekendCheckedList) || !this.state.time}
-            onClick={this.onClickSubmit}>
+            onClick={this.onSaveAlarm}>
             Submit
           </Button>
         </div>

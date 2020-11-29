@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Menu } from "antd";
-import { FieldTimeOutlined, PlayCircleOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { FieldTimeOutlined, PlayCircleOutlined, UnorderedListOutlined, SoundOutlined } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import appRoutes from "../../shared/appRoutes";
 
@@ -23,7 +23,12 @@ class NavBar extends React.Component {
           <Menu.Item key="schedule" icon={<UnorderedListOutlined />}>
             <NavLink to={appRoutes.schedule}>
               Alarm Schedule
-            </NavLink>    
+            </NavLink>
+          </Menu.Item>
+          <Menu.Item key="ringtones" icon={<SoundOutlined />}>
+            <NavLink to={appRoutes.ringtones}>
+              Ringtones
+            </NavLink>
           </Menu.Item>
         </Menu>
       </Layout.Header>

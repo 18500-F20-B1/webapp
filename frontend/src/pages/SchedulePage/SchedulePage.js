@@ -7,10 +7,13 @@ import axios from 'axios';
 import "./SchedulePage.css";
 
 class SchedulePage extends React.Component {
+  constructor(props) {
+    super(props);
 
-  state = {
-    schedule: []
-  };
+    this.state = {
+      schedule: []
+    };
+  }
 
   componentDidMount = () => {
     axios.get(`${DATABASE_URL}/alarms`)
@@ -27,7 +30,7 @@ class SchedulePage extends React.Component {
         <Divider orientation="left">
           Current Alarms
         </Divider>
-        <p className="help-text">Click to play ringtone!</p>
+        <p className="help-text">* Click to play ringtone!</p>
         <div>
         {(this.state.schedule && this.state.schedule.length > 0) 
          ? <List
@@ -39,7 +42,7 @@ class SchedulePage extends React.Component {
               {alarm.day} {moment(alarm.time).format("HH:mm")}
             </List.Item>}
           />
-         : <p>No Alarms Scheduled Yet</p>
+         : <p className="no-alarm-text">No Alarms Scheduled Yet</p>
         }
         </div>
       </div>

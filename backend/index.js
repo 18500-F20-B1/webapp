@@ -73,6 +73,20 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     });
   });
 
+  server.delete("/ringtones/:name", (request, response) => {
+    const name = request.params.name;
+    console.log(`DELETE /ringtones/:${name}`);
+
+    ringtoneCollection.deleteOne({ name }, function (error, result) {
+       if (error) throw error;
+       // send back entire updated list after successful request
+       ringtoneCollection.find().toArray(function (_error, _result) {
+          if (_error) throw _error;
+          response.json(_result);
+       });
+    });
+ });
+
   //  server.get("/items/:id", (request, response) => {
   //     const itemId = request.params.id;
 
@@ -91,20 +105,6 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   //     ringtoneCollection.updateOne({ id: itemId }, { $set: item }, (error, result) => {
   //        if (error) throw error;
   //        // send back entire updated list, to make sure frontend data is up-to-date
-  //        ringtoneCollection.find().toArray(function (_error, _result) {
-  //           if (_error) throw _error;
-  //           response.json(_result);
-  //        });
-  //     });
-  //  });
-
-  //  server.delete("/items/:id", (request, response) => {
-  //     const itemId = request.params.id;
-  //     console.log("Delete item with id: ", itemId);
-
-  //     ringtoneCollection.deleteOne({ id: itemId }, function (error, result) {
-  //        if (error) throw error;
-  //        // send back entire updated list after successful request
   //        ringtoneCollection.find().toArray(function (_error, _result) {
   //           if (_error) throw _error;
   //           response.json(_result);

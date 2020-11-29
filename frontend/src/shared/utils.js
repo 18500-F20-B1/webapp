@@ -18,28 +18,16 @@ export const playRingtone = (notes) => {
     let totalDuration = 0;
     for (let i = 0; i < notes.length; i = i + 2) {
       let pitch = notes[i];
-      let duration = notes[i + 1];
+      let duration = notes[i + 1] / 64;
       piano.play(pitch, ac.currentTime + totalDuration, { duration });
       totalDuration += duration;
     }
   })
 };
 
-export const testPlayRingtone = (pitches, durations) => {
-  let ac = new AudioContext()
-  Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (piano) {
-    let totalDuration = 0;
-    pitches.forEach((pitch, i) => {
-      let duration = durations[i];
-      piano.play(pitch, ac.currentTime + totalDuration, { duration });
-      totalDuration += duration;
-    })
-  })
-};
-
 export const playNote = (pitch, duration) => {
   let ac = new AudioContext()
   Soundfont.instrument(ac, 'acoustic_grand_piano').then(function (piano) {
-    piano.play(pitch, ac.currentTime, { duration });
+    piano.play(pitch, ac.currentTime, { duration: duration / 64 });
   })
 };

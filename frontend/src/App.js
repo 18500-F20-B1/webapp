@@ -5,6 +5,7 @@ import Footer from "./components/Footer/Footer";
 import CreateAlarmPage from "./pages/CreateAlarmPage/CreateAlarmPage";
 import CreateRingtonePage from  "./pages/CreateRingtonePage/CreateRingtonePage";
 import SchedulePage from "./pages/SchedulePage/SchedulePage";
+import RingtonePage from "./pages/RingtonePage/RingtonePage";
 import appRoutes from "./shared/appRoutes";
 import "./App.css";
 
@@ -22,6 +23,9 @@ const App = () => (
         </Route>
         <Route exact path={appRoutes.schedule}>
           <SchedulePage />
+        </Route>
+        <Route exact path={appRoutes.ringtones}>
+          <RingtonePage />
         </Route>
         <Redirect to={appRoutes.home} />
       </Switch>

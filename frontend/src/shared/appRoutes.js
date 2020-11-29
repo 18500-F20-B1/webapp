@@ -3,5 +3,6 @@ export default {
   about: "/about",
   createAlarm: "/create-alarm",
   createRingtone: "/create-ringtone",
-  schedule: "/schedule"
+  schedule: "/schedule",
+  ringtones: "/ringtones"
 };
