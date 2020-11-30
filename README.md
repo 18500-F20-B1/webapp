@@ -1,3 +1,10 @@
+## How I made full stack app continuously in background on EC2
+
+I use pm2.
+I can't use commands that start with "serve" or "pm2" because of permission issues. I realize it can be worked around by calling npx to execute serve or pm2 commands instead.
+In frontend/, I did npm run build and created a run.sh which pm2 uses to run the app (npx pm2 start run.sh --name frontend). The app now runs on port 5000 instead of 4000 in dev mode. 
+In backend/, I used the entry file directly(npx pm2 start index.js). I think the backend app runs on port 4000 instead of 3000 in dev mode? I used "sudo kill -9 $(sudo lsof -t -i:4000)" to kill the process running on port 4000.
+
 # Remeber the alarms are in PST!
 
 # Don't forget to run the [Pi snippet](https://github.com/18500-F20-B1/RPi/tree/yh-sqs), before you set the alarm on web app.
