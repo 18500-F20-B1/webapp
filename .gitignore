@@ -6,6 +6,9 @@ capstone.pem
 # AWS SQS
 backend/config.json
 
+# logging
+backend/log.txt
+
 # dependencies
 /node_modules
 /.pnp

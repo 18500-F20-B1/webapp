@@ -1,5 +1,5 @@
 const cron = require("node-cron"); 
-const moment = require("moment");
+const moment = require('moment-timezone');
 const fs = require('fs');
 
 const aws = require('aws-sdk');
@@ -13,8 +13,10 @@ const scheduleAlarms = (alarms) => {
     let minHr = moment(alarm.time).format("mm HH");
     let day = getDay(alarm.day.toLowerCase());
     let schedule = `${minHr} * * ${day}`;
-
-    writeToLog(`Message scheduled to send at UTC time ${alarm.day} ${moment(alarm.time).format("HH mm")}`)
+    
+    let utcTime = moment(alarm.time).utc().format('MM/DD/YYYY HH:mm');
+    let pdtTime = moment(alarm.time).tz('America/Los_Angeles').format('MM/DD/YYYY HH:mm');
+    writeToLog(`Message scheduled to send at UTC time ${utcTime} or PDT time ${pdtTime}\n`)
 
     cron.schedule(schedule, () => {
       send(alarm);
@@ -49,7 +51,7 @@ const getDay = (str) => {
 
 const writeToLog = (txt) => {
   let currTime = new Date();
-  let toBeAppended = `${currTime.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} (PDT) ${txt}`;
+  let toBeAppended = `${currTime.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} (PDT) ${txt}\n`;
   fs.appendFile('log.txt', toBeAppended, (err) => {
     if (err) throw err;
   });
