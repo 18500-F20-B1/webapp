@@ -1,5 +1,6 @@
 const cron = require("node-cron"); 
 const moment = require("moment");
+const fs = require('fs');
 
 const aws = require('aws-sdk');
 aws.config.loadFromPath(__dirname + '/config.json');
@@ -9,18 +10,15 @@ const sqs = new aws.SQS();
 
 const scheduleAlarms = (alarms) => {
   alarms.forEach((alarm) => {
-    let minHr = moment(alarm.time).utcOffset(-480).format("mm HH");
+    let minHr = moment(alarm.time).format("mm HH");
     let day = getDay(alarm.day.toLowerCase());
     let schedule = `${minHr} * * ${day}`;
 
-    console.log(`Message scheduled to send at ${alarm.day} ${moment(alarm.time).utcOffset(-480).format("HH mm")}`)
+    writeToLog(`Message scheduled to send at UTC time ${alarm.day} ${moment(alarm.time).format("HH mm")}`)
 
     cron.schedule(schedule, () => {
       send(alarm);
-    }, {
-      timezone: "America/Los_Angeles"
-    }
-    );
+    });
   })
 }
 
@@ -31,7 +29,7 @@ const send = (alarm) => {
     DelaySeconds: 0
   };
 
-  console.log("Message sent to SQS");
+  writeToLog("Message sent to SQS");
 
   sqs.sendMessage(params, function(err, data) {
     if(err) console.log(err);
@@ -47,6 +45,14 @@ const getDay = (str) => {
   else if (str.startsWith("fri")) return 5
   else if (str.startsWith("sat")) return 6
   else return 0
+}
+
+const writeToLog = (txt) => {
+  let currTime = new Date();
+  let toBeAppended = `${currTime.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} (PDT) ${txt}`;
+  fs.appendFile('log.txt', toBeAppended, (err) => {
+    if (err) throw err;
+  });
 }
 
 module.exports = { scheduleAlarms }
