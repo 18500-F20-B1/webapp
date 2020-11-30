@@ -4,7 +4,7 @@
 capstone.pem
 
 # AWS SQS
-config.json
+backend/config.json
 
 # dependencies
 /node_modules

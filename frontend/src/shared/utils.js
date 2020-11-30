@@ -1,6 +1,6 @@
 import Soundfont from "soundfont-player";
 
-export const DATABASE_URL = "http://3.129.61.132:4000";
+export const DATABASE_URL = "http://localhost:4000";
 
 export const DAYS = {
   monday: "Monday",
