@@ -18,5 +18,8 @@
   "homepage": "https://github.com/18500-F20-B1/webapp#readme",
   "devDependencies": {
     "concurrently": "^5.3.0"
+  },
+  "dependencies": {
+    "pm2": "^4.5.0"
   }
 }
