@@ -158,7 +158,7 @@ class CreateAlarmPage extends React.Component {
     selectedDays.forEach(day => {
       newAlarms.push({
         ringtone : this.state.chosenRingtone,
-        day, 
+        day,
         time : this.state.time,
         user : this.props.user.uid
       }); // TODO: validate alarm before schedule it

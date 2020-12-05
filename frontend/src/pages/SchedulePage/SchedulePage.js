@@ -1,5 +1,6 @@
 import React from "react";
-import { List } from "antd";
+import { Divider, Button, message } from "antd";
+import  { DeleteOutlined } from "@ant-design/icons";
 import { DATABASE_URL, playRingtone } from "../../shared/utils";
 import moment from "moment";
 import axios from 'axios';
@@ -16,6 +17,10 @@ class SchedulePage extends React.Component {
   }
 
   componentDidMount = () => {
+    this.getAlarms();
+  }
+
+  getAlarms() {
     axios.get(`${DATABASE_URL}/alarms`, {
       params : {
         user : this.props.user.uid
@@ -28,24 +33,50 @@ class SchedulePage extends React.Component {
     });
   }
 
+  deleteAlarm = (alarm) => {
+    axios.delete(`${DATABASE_URL}/alarms`, {
+      data : {
+        time : alarm.time,
+        day : alarm.day,
+        user : alarm.user
+    }}).then(_ => {
+      message.success("Alarm deleted.");
+      this.getAlarms();
+    }).catch((error) => {
+      console.log(error);
+    });    
+  }
+
+  getJobId = (alarm) => {
+    return `${alarm.day}-${alarm.time}-${alarm.user}`;
+  }
+
   render() {
     return (
       <div className="schedulePageContainer">
-        <p className="helpText">* Click to play ringtone!</p>
-        <div>
-        {(this.state.schedule && this.state.schedule.length > 0) 
-         ? <List
-          size="large"
-          bordered
-          dataSource={this.state.schedule}
-          renderItem={alarm => 
-            <List.Item onClick={() => playRingtone(alarm.ringtone.notes)}>
-              {alarm.day} {moment(alarm.time).format("HH:mm")}
-            </List.Item>}
-          />
-         : <p className="no-alarm-text">No Alarms Scheduled Yet</p>
-        }
-        </div>
+        {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) => {
+            let alarms = this.state.schedule.filter(i => i.day === day);
+            return (
+              <div key={index}>
+                <Divider orientation="left">
+                  {day}
+                </Divider>
+                {(alarms.length > 0)
+                  ? <div className="AlarmListContainer">
+                      {alarms.map((alarm, idx) => {
+                        return (
+                          <span key={idx} className="oneAlarmContainer">
+                            <Button value={alarm.ringtone.name} onClick={() => playRingtone(alarm.ringtone.notes)}
+                              type="dashed" size="large" className="alarmTime">{moment(alarm.time).format("HH:mm")}</Button>
+                            <Button onClick={() => this.deleteAlarm(alarm)}
+                              type="primary" size="large" className="deleteAlarm" danger><DeleteOutlined /></Button>
+                          </span>
+                      )})}
+                    </div>
+                  : <p>No alarm set</p>
+                }
+              </div>
+        )})}
       </div>
     );
   }

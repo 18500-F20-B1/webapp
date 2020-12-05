@@ -8,12 +8,24 @@
   margin: 15px 0;
 }
 
+.AlarmListContainer {
+  text-align: justify;
+  padding-left: 10vh;
+  padding-right: 10vh;
+}
+
+.alarmTime {
+  width: 50%;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.deleteAlarm {
+  width: 10%;
+}
+
 .helpText {
   padding-top: 20px;
   padding-left: 20px;
   color: rosybrown;
-}
-
-.no-alarm-text {
-  padding-left: 20px;
 }

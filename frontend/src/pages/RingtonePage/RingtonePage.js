@@ -49,7 +49,8 @@ class RingtonePage extends React.Component {
     axios.delete(`${DATABASE_URL}/ringtones/${name}`)
     .then(_ => {
       message.success("Ringtone deleted.");
-      this.getRingtones();
+      this.getPublicRingtones();
+      this.getPrivateRingtones();
     }).catch((error) => {
       console.log(error);
     });    

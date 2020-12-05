@@ -22,18 +22,10 @@ const dbName = "capstone";
 const ringtoneCollectionName = "ringtones";
 const alarmCollectionName = "alarms";
 
-const { scheduleAlarms } = require("./schedule-alarms");
+const { scheduleAlarms, cancelAlarm } = require("./schedule-alarms");
 
 db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (ringtoneCollection, alarmCollection) { // successCallback
-  //  // get all items (use for debugging)
-  //   ringtoneCollection.find().toArray(function (err, result) {
-  //     if (err) throw err;
-  //     console.log(result);
 
-  //     // << return response to client >>
-  //   });
-
-   // << db CRUD routes >>
   server.post("/api/ringtones/create", (request, response) => {
     console.log("POST /ringtones/create");
     let item = request.body;
@@ -81,47 +73,32 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
         response.json(result);
       });
     }
-
   });
+
+  server.delete("/api/alarms", (request, response) => {
+    const alarm = request.body;
+    console.log("DELETE /alarms");
+    alarmCollection.deleteOne({ 
+        user : alarm.user,
+        time : alarm.time,
+        day : alarm.day
+      }, function (error, result) {
+       if (error) throw error;
+       // send back entire updated list after successful request
+       cancelAlarm(alarm);
+       response.json(null);
+    });
+ });
 
   server.delete("/api/ringtones/:name", (request, response) => {
     const name = request.params.name;
     console.log(`DELETE /ringtones/:${name}`);
-
     ringtoneCollection.deleteOne({ name }, function (error, result) {
-       if (error) throw error;
-       // send back entire updated list after successful request
-       ringtoneCollection.find().toArray(function (_error, _result) {
-          if (_error) throw _error;
-          response.json(_result);
-       });
+      if (error) throw error;
+      // send back entire updated list after successful request
+      response.json(null);
     });
  });
-
-  //  server.get("/items/:id", (request, response) => {
-  //     const itemId = request.params.id;
-
-  //     ringtoneCollection.findOne({ id: itemId }, (error, result) => {
-  //        if (error) throw error;
-  //        // return item
-  //        response.json(result);
-  //     });
-  //  });
-
-  //  server.put("/items/:id", (request, response) => {
-  //     const itemId = request.params.id;
-  //     const item = request.body;
-  //     console.log("Editing item: ", itemId, " to be ", item);
-
-  //     ringtoneCollection.updateOne({ id: itemId }, { $set: item }, (error, result) => {
-  //        if (error) throw error;
-  //        // send back entire updated list, to make sure frontend data is up-to-date
-  //        ringtoneCollection.find().toArray(function (_error, _result) {
-  //           if (_error) throw _error;
-  //           response.json(_result);
-  //        });
-  //     });
-  //  });
 
 }, function (err) { // failureCallback
   throw (err);
