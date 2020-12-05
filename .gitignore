@@ -10,6 +10,7 @@ backend/config.json
 frontend/firebaseConfig.js
 
 # logging
+log.txt
 backend/log.txt
 
 # dependencies
