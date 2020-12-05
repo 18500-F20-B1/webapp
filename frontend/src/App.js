@@ -19,7 +19,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user : localStorage.getItem("user")
+      user : JSON.parse(localStorage.getItem("user"))
     };
   }
 

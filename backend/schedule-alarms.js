@@ -16,8 +16,8 @@ const scheduleAlarms = (alarms) => {
     
     let utcTime = moment(alarm.time).utc().format('MM/DD/YYYY HH:mm');
     let pdtTime = moment(alarm.time).tz('America/Los_Angeles').format('MM/DD/YYYY HH:mm');
-    writeToLog(`Message scheduled to send at UTC time ${utcTime} or PDT time ${pdtTime}\n`)
-
+    writeToLog(`Message scheduled to send at UTC time ${utcTime} or PDT time ${pdtTime}`);
+    writeToLog(`${JSON.stringify(alarm)}`);
     cron.schedule(schedule, () => {
       send(alarm);
     });
@@ -32,6 +32,7 @@ const send = (alarm) => {
   };
 
   writeToLog("Message sent to SQS");
+  writeToLog(`${JSON.stringify(alarm)}`);
 
   sqs.sendMessage(params, function(err, data) {
     if(err) console.log(err);

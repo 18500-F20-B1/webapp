@@ -14,7 +14,7 @@ server.use(cors());
 const body_parser = require("body-parser");
 server.use(body_parser.json()); // parse JSON (application/json content-type)
 
-const port = process.env.PORT;
+const port = 4000;
 
 // << db setup >>
 const db = require("./db");
@@ -56,7 +56,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   });
 
   server.get("/alarms", (request, response) => {
-    let user = request.body.user;
+    let user = request.query.user;
     if (user) {
       console.log(`GET /alarms?user=${user}`);
       alarmCollection.find({ user : user }).toArray((error, result) => {
@@ -67,7 +67,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   });
 
   server.get("/ringtones", (request, response) => {
-    let user = request.body.user;
+    let user = request.query.user;
     if (user) {
       console.log(`GET /ringtones?user=${user}`);
       ringtoneCollection.find({ user : user }).toArray((error, result) => {
@@ -76,7 +76,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
       });
     } else {
       console.log("GET /ringtones");
-      ringtoneCollection.find().toArray((error, result) => {
+      ringtoneCollection.find({ user : null }).toArray((error, result) => {
         if (error) throw error;
         response.json(result);
       });

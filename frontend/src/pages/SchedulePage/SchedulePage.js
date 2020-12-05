@@ -16,7 +16,11 @@ class SchedulePage extends React.Component {
   }
 
   componentDidMount = () => {
-    axios.get(`${DATABASE_URL}/alarms`)
+    axios.get(`${DATABASE_URL}/alarms`, {
+      params : {
+        user : this.props.user.uid
+      }
+    })
     .then((res) => {
       this.setState({ schedule : res.data })
     }).catch((error) => {

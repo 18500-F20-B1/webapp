@@ -34,9 +34,19 @@ class CreateAlarmPage extends React.Component {
     // clear previously selected days
     localStorage.setItem("currDays", JSON.stringify([]));
     // load all ringtones
-    axios.get(`${DATABASE_URL}/ringtones`)
-    .then((res) => {
-      this.setState({ ringtones : res.data });
+    axios.get(`${DATABASE_URL}/ringtones`, {
+      params: {
+        user : this.props.user.uid
+      }
+    }).then((resPrivate) => {
+      axios.get(`${DATABASE_URL}/ringtones`)
+      .then((resPublic) => {
+        console.log(resPrivate.data);
+        console.log(resPublic.data);
+        this.setState({ ringtones : [...resPrivate.data, ...resPublic.data] });
+      }).catch((error) => {
+        console.log(error);
+      });
     }).catch((error) => {
       console.log(error);
     });
@@ -45,7 +55,7 @@ class CreateAlarmPage extends React.Component {
   changeSelectedDays = (areWeekdays, days) => {
     let newDays = JSON.parse(localStorage.getItem("currDays"));
     if (!newDays) { 
-      newDays = []; 
+      newDays = [];
     }
     if (days.length > 0) {
       days.forEach(d => {
@@ -202,7 +212,6 @@ class CreateAlarmPage extends React.Component {
           <br />
           <TimePicker
             format={format}
-            minuteStep={5}
             value={this.state.time}
             onChange={this.onChangeTime}
           />
@@ -221,8 +230,8 @@ class CreateAlarmPage extends React.Component {
         </div>
         <div className="uploadAlarm">
           <Button type="primary" size="large" 
-            disabled={!this.state.chosenRingtone || !(this.state.weekdayCheckedList 
-                      || this.state.weekendCheckedList) || !this.state.time}
+            disabled={!this.state.chosenRingtone || !(this.state.weekdayCheckedList.length 
+                      || this.state.weekendCheckedList.length) || !this.state.time}
             onClick={this.onSaveAlarm}>
             Submit
           </Button>
