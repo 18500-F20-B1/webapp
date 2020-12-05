@@ -14,7 +14,7 @@ server.use(cors());
 const body_parser = require("body-parser");
 server.use(body_parser.json()); // parse JSON (application/json content-type)
 
-const port = 4000
+const port = process.env.PORT;
 
 // << db setup >>
 const db = require("./db");
