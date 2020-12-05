@@ -34,7 +34,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   //   });
 
    // << db CRUD routes >>
-  server.post("/ringtones/create", (request, response) => {
+  server.post("/api/ringtones/create", (request, response) => {
     console.log("POST /ringtones/create");
     let item = request.body;
     ringtoneCollection.insertOne(item, (error, result) => { // callback of insertOne
@@ -43,7 +43,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     });
   });
 
-  server.post("/alarms/create", (request, response) => {
+  server.post("/api/alarms/create", (request, response) => {
     console.log("POST /alarms/create");
     let items = request.body;
     alarmCollection.insertMany(items, (error, result) => { // callback of insertOne
@@ -55,7 +55,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     });
   });
 
-  server.get("/alarms", (request, response) => {
+  server.get("/api/alarms", (request, response) => {
     let user = request.query.user;
     if (user) {
       console.log(`GET /alarms?user=${user}`);
@@ -66,7 +66,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     }
   });
 
-  server.get("/ringtones", (request, response) => {
+  server.get("/api/ringtones", (request, response) => {
     let user = request.query.user;
     if (user) {
       console.log(`GET /ringtones?user=${user}`);
@@ -84,7 +84,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
 
   });
 
-  server.delete("/ringtones/:name", (request, response) => {
+  server.delete("/api/ringtones/:name", (request, response) => {
     const name = request.params.name;
     console.log(`DELETE /ringtones/:${name}`);
 

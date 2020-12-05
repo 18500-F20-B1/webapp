@@ -1,5 +1,5 @@
 import Soundfont from "soundfont-player";
-export const DATABASE_URL = "http://ec2-3-129-61-132.us-east-2.compute.amazonaws.com:4000";
+export const DATABASE_URL = "http://ec2-3-129-61-132.us-east-2.compute.amazonaws.com:4000/api";
 
 export const DAYS = {
   monday: "Monday",
