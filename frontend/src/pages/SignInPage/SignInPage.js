@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import appRoutes from "../../shared/appRoutes";
 import firebase from "../../shared/firebase";
 import "./SignInPage.css";
@@ -13,7 +13,8 @@ const SignInPage = () => {
     firebase.auth().signInWithPopup(provider).then(function(result) {
       history.push(appRoutes.createAlarm);
     }).catch(function(error) {
-      message("Something went wrong when logging in.");
+      console.log("Something went wrong when logging in.");
+      console.log(error);
     });
   }
 
