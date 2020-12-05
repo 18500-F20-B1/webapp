@@ -49,9 +49,9 @@ const getNoteLetter = (idx) => {
 
 const PitchSelecter = ({ pitch, noteIdx, onChangePitch }) => {
   return (
-    <span className="pitch-select-span">
+    <span className="pitchSelectSpan">
       <label>Pitch: </label>
-      <Select className="pitch-select" 
+      <Select className="pitchSelect" 
         value={pitch}
         onChange={e => onChangePitch(e, noteIdx)}>
         {/* 60 notes = 5 octaves */}
@@ -73,13 +73,13 @@ const NoteEditor = ({
     <div className="noteEditor">
       {pitches.map((pitch, noteIdx) => {
         return (
-          <div key={noteIdx} className="one-note-container">
+          <div key={noteIdx} className="oneNoteContainer">
             <Divider>
               Note # {noteIdx + 1}
             </Divider>
 
             {/* Note Player */}
-            <Button className="play-note-button" 
+            <Button className="playNoteButton" 
               onClick={() => onPlayNote(noteIdx)}>
               <RightCircleOutlined />
             </Button>
@@ -87,9 +87,9 @@ const NoteEditor = ({
             <PitchSelecter pitch={pitch} noteIdx={noteIdx} onChangePitch={onChangePitch} />
 
             {/* Duration Selector */}
-            <span className="duration-select-span">
+            <span className="durationSelectSpan">
               <label>Duration(in seconds): </label>
-              <Select className="duration-select" 
+              <Select className="durationSelect" 
                 value={durations[noteIdx]}
                 onChange={e => onChangeDuration(e, noteIdx)}>
                 {Object.keys(durationOptions).map((dKey, idx)=> {
@@ -170,7 +170,12 @@ class CreateRingtonePage extends React.Component {
   onSaveRingtone = async () => {
     const res = await this.isNameValid(this.state.name);
     if (res) {
-      let ringtone = { notes: [], name: this.state.name };
+      let ringtone = {
+        notes : [], 
+        name : this.state.name,
+        user : this.props.user.uid
+      };
+
       this.state.pitches.forEach((p, i) =>{
         ringtone.notes.push(p);
         let d = this.state.durations[i]
@@ -270,27 +275,27 @@ class CreateRingtonePage extends React.Component {
 
   render() {
     return (
-      <div className="create-ringtone-page-container">
-        <div className="add-note-container">
+      <div className="createRingtonePageContainer">
+        <div className="addNoteContainer">
           <div>
-            <label className="name-label">Ringtone name: </label>
-            <Input value={this.state.name} className="name-input" placeholder="Sunrise" allowClear
+            <label className="nameLabel">Ringtone name: </label>
+            <Input value={this.state.name} className="nameInput" placeholder="Sunrise" allowClear
               onChange={this.onChangeName}
             />
           </div>
-          <Button type="primary" block className="add-note-button" 
+          <Button type="primary" block className="addNoteButton" 
             disabled={this.state.pitches.length >= 16 || !this.state.showNoteEditor}
             onClick={this.onAddNote}>
             <PlusOutlined />Add a Note
           </Button>
-          <Button type="primary" block className="preview-button" 
+          <Button type="primary" block className="previewButton" 
             disabled={this.state.pitches.length <= 0
                       || this.state.pitches.some(e => !e)
                       || this.state.durations.some(e => !e)}
             onClick={this.onPlayRingtone}>
             <CaretRightOutlined />Preview Ringtone
           </Button>
-          <Button type="primary" block className="save-button"
+          <Button type="primary" block className="saveButton"
             disabled={this.state.pitches.length <= 0
                       || this.state.pitches.some(e => !e)
                       || this.state.durations.some(e => !e)
@@ -298,7 +303,7 @@ class CreateRingtonePage extends React.Component {
             onClick={this.onSaveRingtone}>
             <SaveOutlined />Save Ringtone
           </Button>
-          <p className="help-text">* You can add up to 16 notes</p>
+          <p className="helpText">* You can add up to 16 notes</p>
         </div>
         <Button onClick={this.onSwitchEditMode}>Switch edit mode</Button>
         {this.state.showNoteEditor 

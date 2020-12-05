@@ -1,5 +1,5 @@
 import React from "react";
-import { Divider, List } from "antd";
+import { List } from "antd";
 import { DATABASE_URL, playRingtone } from "../../shared/utils";
 import moment from "moment";
 import axios from 'axios';
@@ -26,11 +26,8 @@ class SchedulePage extends React.Component {
 
   render() {
     return (
-      <div className="schedule-page-container">
-        <Divider orientation="left">
-          Current Alarms
-        </Divider>
-        <p className="help-text">* Click to play ringtone!</p>
+      <div className="schedulePageContainer">
+        <p className="helpText">* Click to play ringtone!</p>
         <div>
         {(this.state.schedule && this.state.schedule.length > 0) 
          ? <List

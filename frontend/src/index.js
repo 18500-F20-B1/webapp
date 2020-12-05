@@ -7,7 +7,8 @@ import * as serviceWorker from './serviceWorker';
 import './index.css';
 import moment from 'moment-timezone';
 
-moment.tz.setDefault("America/Los_Angeles");
+console.log(moment.tz.guess());
+moment.tz.setDefault(moment.tz.guess());
 
 ReactDOM.render(
   <Router>

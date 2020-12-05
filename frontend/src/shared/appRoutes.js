@@ -4,5 +4,6 @@ export default {
   createAlarm: "/create-alarm",
   createRingtone: "/create-ringtone",
   schedule: "/schedule",
-  ringtones: "/ringtones"
+  ringtones: "/ringtones",
+  signin: "/signin"
 };

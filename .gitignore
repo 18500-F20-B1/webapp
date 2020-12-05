@@ -6,6 +6,9 @@ capstone.pem
 # AWS SQS
 backend/config.json
 
+# Firebase config
+frontend/firebaseConfig.js
+
 # logging
 backend/log.txt
 

@@ -1,8 +1,8 @@
-.time-form, .ringtone-form {
+.timeForm, .ringtoneForm {
   padding-left: 5%;
 }
 
-.upload-alarm {
+.uploadAlarm {
   text-align: center;
   margin-bottom: 10px;
 }

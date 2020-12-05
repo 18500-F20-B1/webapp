@@ -11,22 +11,38 @@ class RingtonePage extends React.Component {
     super(props);
 
     this.state = {
-      ringtones: []
+      publicRingtones: [],
+      privateRingtones: []
     };
   }
 
-  getRingtones() {
+  getPrivateRingtones() {
+    // load all ringtones
+    axios.get(`${DATABASE_URL}/ringtones`, {
+      params : {
+        user : this.props.user.uid
+      }
+    })
+    .then((res) => {
+      this.setState({ privateRingtones : res.data });
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  getPublicRingtones() {
     // load all ringtones
     axios.get(`${DATABASE_URL}/ringtones`)
     .then((res) => {
-      this.setState({ ringtones : res.data });
+      this.setState({ publicRingtones : res.data });
     }).catch((error) => {
       console.log(error);
     });
   }
 
   componentDidMount = () => {
-    this.getRingtones();
+    this.getPublicRingtones();
+    this.getPrivateRingtones();
   };
 
   deleteRingtone = (name) => {
@@ -41,13 +57,14 @@ class RingtonePage extends React.Component {
   
   render() {
     return (
-      <div className="ringtone-page-container">
+      <div className="ringtonePageContainer">
+
         <Divider orientation="left">
-          Ringtones
+          Private Ringtones
         </Divider>
-        {(this.state.ringtones && this.state.ringtones.length > 0) 
-          ? <div className="ringtonesContainer">
-              {this.state.ringtones.map((rt, idx) => {
+        {(this.state.privateRingtones && this.state.privateRingtones.length > 0) 
+          ? <div className="privateRingtoneListContainer">
+              {this.state.privateRingtones.map((rt, idx) => {
                 return (
                   <span key={idx} className="oneRingtoneContainer">
                     <Button value={rt.name} onClick={() => playRingtone(rt.notes)}
@@ -57,8 +74,25 @@ class RingtonePage extends React.Component {
                   </span>
               )})}
             </div>
-          : <p>No ringtones detected</p>
+          : <p>No private ringtones yet</p>
         }
+
+        <Divider orientation="left">
+          Public Ringtones
+        </Divider>
+        {(this.state.publicRingtones && this.state.publicRingtones.length > 0) 
+          ? <div className="publicRingtoneListContainer">
+              {this.state.publicRingtones.map((rt, idx) => {
+                return (
+                  <span key={idx} className="oneRingtoneContainer">
+                    <Button value={rt.name} onClick={() => playRingtone(rt.notes)}
+                      type="dashed" size="large" className="ringtoneName">{rt.name}</Button>
+                  </span>
+              )})}
+            </div>
+          : <p>No public ringtones yet</p>
+        }
+
       </div>
     );
   }

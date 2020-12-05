@@ -1,37 +1,38 @@
-.create-ringtone-page-container {
+.createRingtonePageContainer {
   text-align: center;
+  min-height: 80vh;
 }
 
-.add-note-container {
+.addNoteContainer {
   padding-left: 20%;
   padding-right: 20%;
   padding-bottom: 2%;
   padding-top: 2%;
 }
 
-.add-note-button, .preview-button, .save-button {
+.addNoteButton, .previewButton, .saveButton {
   margin-bottom: 1%;
 }
 
-.name-input {
+.nameInput {
   margin-bottom: 1%;
 }
 
-.play-note-button {
+.playNoteButton {
   margin-left: 2%;
   margin-right: 1%;
 }
 
-.pitch-select-span, .duration-select-span {
+.pitchSelectSpan, .durationSelectSpan {
   padding-left: 1%;
   padding-right: 1%;
 }
 
-.pitch-select, .duration-select {
+.pitchSelect, .durationSelect {
   width: 120px;
 }
 
-.one-note-container {
+.oneNoteContainer {
   margin-bottom: 1%;
 }
 

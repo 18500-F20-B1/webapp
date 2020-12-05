@@ -1,9 +1,15 @@
-li{
+.schedulePageContainer {
+  text-align: center;
+  min-height: 80vh;
+}
+
+.schedulePageContainer li{
   cursor: pointer;
   margin: 15px 0;
 }
 
-.help-text {
+.helpText {
+  padding-top: 20px;
   padding-left: 20px;
   color: rosybrown;
 }

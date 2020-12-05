@@ -149,7 +149,8 @@ class CreateAlarmPage extends React.Component {
       newAlarms.push({
         ringtone : this.state.chosenRingtone,
         day, 
-        time : this.state.time 
+        time : this.state.time,
+        user : this.props.user.uid
       }); // TODO: validate alarm before schedule it
     });
 
@@ -170,7 +171,7 @@ class CreateAlarmPage extends React.Component {
         <Divider orientation="left">
           Set a Day & Time
         </Divider>
-        <div className="time-form">
+        <div className="timeForm">
           <Checkbox
             indeterminate={this.state.checkSomeWeekdays}
             onChange={this.onChangeAllWeekdays}
@@ -209,7 +210,7 @@ class CreateAlarmPage extends React.Component {
         <Divider orientation="left">
           Set a Ringtone
         </Divider>
-        <div className="ringtone-form">          
+        <div className="ringtoneForm">          
           {(this.state.ringtones && this.state.ringtones.length > 0) 
             ? <Radio.Group buttonStyle="solid">{this.state.ringtones.map((rt, idx) => {
                 return (
@@ -218,7 +219,7 @@ class CreateAlarmPage extends React.Component {
               </Radio.Group>
             : <p>No ringtones detected</p>}
         </div>
-        <div className="upload-alarm">
+        <div className="uploadAlarm">
           <Button type="primary" size="large" 
             disabled={!this.state.chosenRingtone || !(this.state.weekdayCheckedList 
                       || this.state.weekendCheckedList) || !this.state.time}

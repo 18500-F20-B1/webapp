@@ -56,21 +56,32 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   });
 
   server.get("/alarms", (request, response) => {
-    console.log("GET /alarms");
-    // return updated list
-    alarmCollection.find().toArray((error, result) => {
-      if (error) throw error;
-      response.json(result);
-    });
+    let user = request.body.user;
+    if (user) {
+      console.log(`GET /alarms?user=${user}`);
+      alarmCollection.find({ user : user }).toArray((error, result) => {
+        if (error) throw error;
+        response.json(result);
+      });
+    }
   });
 
   server.get("/ringtones", (request, response) => {
-    console.log("GET /ringtones");
-    // return updated list
-    ringtoneCollection.find().toArray((error, result) => {
-      if (error) throw error;
-      response.json(result);
-    });
+    let user = request.body.user;
+    if (user) {
+      console.log(`GET /ringtones?user=${user}`);
+      ringtoneCollection.find({ user : user }).toArray((error, result) => {
+        if (error) throw error;
+        response.json(result);
+      });
+    } else {
+      console.log("GET /ringtones");
+      ringtoneCollection.find().toArray((error, result) => {
+        if (error) throw error;
+        response.json(result);
+      });
+    }
+
   });
 
   server.delete("/ringtones/:name", (request, response) => {
