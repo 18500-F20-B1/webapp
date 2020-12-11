@@ -68,10 +68,17 @@ class RingtonePage extends React.Component {
               {this.state.privateRingtones.map((rt, idx) => {
                 return (
                   <span key={idx} className="oneRingtoneContainer">
-                    <Button value={rt.name} onClick={() => playRingtone(rt.notes)}
-                      type="dashed" size="large" className="ringtoneName">{rt.name}</Button>
-                    <Button onClick={() => this.deleteRingtone(rt.name)}
-                      type="primary" size="large" className="deleteRingtone" danger><DeleteOutlined /></Button>
+                    <Button className="ringtoneName" value={rt.name} 
+                      type="dashed" size="large"
+                      onClick={() => playRingtone(rt.notes)}
+                    >
+                      {rt.name}
+                    </Button>
+                    <Button onClick={() => this.deleteRingtone(rt.name)} danger
+                      type="primary" size="large" className="deleteRingtone"
+                    >
+                      <DeleteOutlined />
+                    </Button>
                   </span>
               )})}
             </div>
@@ -86,8 +93,12 @@ class RingtonePage extends React.Component {
               {this.state.publicRingtones.map((rt, idx) => {
                 return (
                   <span key={idx} className="oneRingtoneContainer">
-                    <Button value={rt.name} onClick={() => playRingtone(rt.notes)}
-                      type="dashed" size="large" className="ringtoneName">{rt.name}</Button>
+                    <Button value={rt.name} type="dashed" size="large" 
+                      className="ringtoneName"
+                      onClick={() => playRingtone(rt.notes)}
+                    >
+                      {rt.name}
+                    </Button>
                   </span>
               )})}
             </div>

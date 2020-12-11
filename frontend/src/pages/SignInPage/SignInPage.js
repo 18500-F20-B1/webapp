@@ -20,7 +20,9 @@ const SignInPage = () => {
 
   return (
     <div className="signInContainer">
-      <Button className="signIn" type="primary" size="large" onClick={signIn}>Sign In</Button>
+      <Button className="signIn" type="primary" size="large" onClick={signIn}>
+        Sign In
+      </Button>
     </div>
   );
 };

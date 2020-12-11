@@ -100,7 +100,8 @@ class CreateAlarmPage extends React.Component {
   onChangeSingleWeekday = weekdayCheckedList => {
     this.setState({
       weekdayCheckedList,
-      checkSomeWeekdays: !!weekdayCheckedList.length && weekdayCheckedList.length < optionsWeekdays.length,
+      checkSomeWeekdays: !!weekdayCheckedList.length && 
+        weekdayCheckedList.length < optionsWeekdays.length,
       checkAllWeekdays: weekdayCheckedList.length === optionsWeekdays.length,
     });
     this.addToSelectedDays(true, weekdayCheckedList);
@@ -109,7 +110,8 @@ class CreateAlarmPage extends React.Component {
   onChangeSingleWeekend = weekendCheckedList => {
     this.setState({
       weekendCheckedList,
-      checkSomeWeekend: !!weekendCheckedList.length && weekendCheckedList.length < optionsWeekend.length,
+      checkSomeWeekend: !!weekendCheckedList.length && 
+        weekendCheckedList.length < optionsWeekend.length,
       checkAllWeekend: weekendCheckedList.length === optionsWeekend.length,
     });
     this.addToSelectedDays(false, weekendCheckedList);
@@ -177,7 +179,7 @@ class CreateAlarmPage extends React.Component {
 
   render() {
     return (
-      <div className="create-alarm-page-container">
+      <div className="createAlarmPageContainer">
         <Divider orientation="left">
           Set a Day & Time
         </Divider>
@@ -221,17 +223,27 @@ class CreateAlarmPage extends React.Component {
         </Divider>
         <div className="ringtoneForm">          
           {(this.state.ringtones && this.state.ringtones.length > 0) 
-            ? <Radio.Group buttonStyle="solid">{this.state.ringtones.map((rt, idx) => {
-                return (
-                  <Radio.Button key={idx} value={rt.name} onClick={() => this.onPlayRingtone(rt)}>{rt.name}</Radio.Button>
-                )})}
+            ? <Radio.Group buttonStyle="solid">
+              {
+                this.state.ringtones.map((rt, idx) => {
+                  return (
+                    <Radio.Button 
+                      key={idx} value={rt.name} 
+                      onClick={() => this.onPlayRingtone(rt)}
+                    >
+                      {rt.name}
+                    </Radio.Button>
+                  )})
+              }
               </Radio.Group>
             : <p>No ringtones detected</p>}
         </div>
         <div className="uploadAlarm">
           <Button type="primary" size="large" 
-            disabled={!this.state.chosenRingtone || !(this.state.weekdayCheckedList.length 
-                      || this.state.weekendCheckedList.length) || !this.state.time}
+            disabled={!this.state.chosenRingtone 
+                      || !(this.state.weekdayCheckedList.length 
+                      || this.state.weekendCheckedList.length) 
+                      || !this.state.time}
             onClick={this.onSaveAlarm}>
             Submit
           </Button>

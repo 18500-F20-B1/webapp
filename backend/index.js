@@ -4,12 +4,15 @@
 const express = require("express");
 const server = express();
 
+var cors = require('cors');
+server.use(cors());
+
 const path = require("path");
 // Serve static files
 server.use(express.static(path.join(__dirname, "../frontend/build")));
 
-const cors = require("cors");
-server.use(cors());
+var router = express.Router();
+server.use('/api', router);
 
 const body_parser = require("body-parser");
 server.use(body_parser.json()); // parse JSON (application/json content-type)
@@ -26,7 +29,7 @@ const { scheduleAlarms, cancelAlarm } = require("./schedule-alarms");
 
 db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (ringtoneCollection, alarmCollection) { // successCallback
 
-  server.post("/api/ringtones/create", (request, response) => {
+  router.post("/ringtones/create", (request, response) => {
     console.log("POST /ringtones/create");
     let item = request.body;
     ringtoneCollection.insertOne(item, (error, result) => { // callback of insertOne
@@ -35,7 +38,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     });
   });
 
-  server.post("/api/alarms/create", (request, response) => {
+  router.post("/alarms/create", (request, response) => {
     console.log("POST /alarms/create");
     let items = request.body;
     alarmCollection.insertMany(items, (error, result) => { // callback of insertOne
@@ -47,7 +50,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     });
   });
 
-  server.get("/api/alarms", (request, response) => {
+  router.get("/alarms", (request, response) => {
     let user = request.query.user;
     if (user) {
       console.log(`GET /alarms?user=${user}`);
@@ -58,7 +61,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     }
   });
 
-  server.get("/api/ringtones", (request, response) => {
+  router.get("/ringtones", (request, response) => {
     let user = request.query.user;
     if (user) {
       console.log(`GET /ringtones?user=${user}`);
@@ -75,7 +78,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     }
   });
 
-  server.delete("/api/alarms", (request, response) => {
+  router.delete("/alarms", (request, response) => {
     const alarm = request.body;
     console.log("DELETE /alarms");
     alarmCollection.deleteOne({ 
@@ -90,7 +93,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
     });
  });
 
-  server.delete("/api/ringtones/:name", (request, response) => {
+  router.delete("/ringtones/:name", (request, response) => {
     const name = request.params.name;
     console.log(`DELETE /ringtones/:${name}`);
     ringtoneCollection.deleteOne({ name }, function (error, result) {

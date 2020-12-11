@@ -1,5 +1,10 @@
+.createAlarmPageContainer {
+  min-height: 640px;
+}
+
 .timeForm, .ringtoneForm {
   padding-left: 5%;
+  min-height: 180px;
 }
 
 .uploadAlarm {

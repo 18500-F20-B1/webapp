@@ -67,8 +67,9 @@ const PitchSelecter = ({ pitch, noteIdx, onChangePitch }) => {
 }
 
 const NoteEditor = ({
-  pitches, durations, onPlayNote, onChangePitch, onChangeDuration, onDeleteNote }
-) => {
+  pitches, durations, onPlayNote, onChangePitch, onChangeDuration, 
+  onDeleteNote 
+}) => {
   return (
     <div className="noteEditor">
       {pitches.map((pitch, noteIdx) => {
@@ -84,7 +85,8 @@ const NoteEditor = ({
               <RightCircleOutlined />
             </Button>
 
-            <PitchSelecter pitch={pitch} noteIdx={noteIdx} onChangePitch={onChangePitch} />
+            <PitchSelecter pitch={pitch} noteIdx={noteIdx} 
+              onChangePitch={onChangePitch} />
 
             {/* Duration Selector */}
             <span className="durationSelectSpan">
@@ -94,7 +96,9 @@ const NoteEditor = ({
                 onChange={e => onChangeDuration(e, noteIdx)}>
                 {Object.keys(durationOptions).map((dKey, idx)=> {
                   return (
-                    <Option key={idx} value={durationOptions[dKey]}>{dKey}</Option>
+                    <Option key={idx} value={durationOptions[dKey]}>
+                      {dKey}
+                    </Option>
                 )})}          
               </Select>
             </span>
@@ -279,13 +283,15 @@ class CreateRingtonePage extends React.Component {
         <div className="addNoteContainer">
           <div>
             <label className="nameLabel">Ringtone name: </label>
-            <Input value={this.state.name} className="nameInput" placeholder="Sunrise" allowClear
-              onChange={this.onChangeName}
+            <Input value={this.state.name} className="nameInput" 
+              placeholder="Sunrise" allowClear onChange={this.onChangeName}
             />
           </div>
-          <Button type="primary" block className="addNoteButton" 
-            disabled={this.state.pitches.length >= 16 || !this.state.showNoteEditor}
-            onClick={this.onAddNote}>
+          <Button type="primary" block className="addNoteButton"
+            onClick={this.onAddNote}
+            disabled={this.state.pitches.length >= 16 
+              || !this.state.showNoteEditor}
+            >
             <PlusOutlined />Add a Note
           </Button>
           <Button type="primary" block className="previewButton" 
@@ -307,11 +313,18 @@ class CreateRingtonePage extends React.Component {
         </div>
         <Button onClick={this.onSwitchEditMode}>Switch edit mode</Button>
         {this.state.showNoteEditor 
-          ? <NoteEditor pitches={this.state.pitches} durations={this.state.durations}
-            onChangePitch={this.onChangePitch} onChangeDuration={this.onChangeDuration}
-            onDeleteNote={this.onDeleteNote} onPlayNote={this.onPlayNote} />
+          ? <NoteEditor 
+              pitches={this.state.pitches} durations={this.state.durations}
+              onChangePitch={this.onChangePitch} 
+              onChangeDuration={this.onChangeDuration}
+              onDeleteNote={this.onDeleteNote}
+              onPlayNote={this.onPlayNote}
+            />
           : <div className="ringtoneEditor">
-              <Divider>Enter the whole ringtone as "pitch1 duration1 pitch2 duration2 ..."</Divider>
+              <Divider>
+                Enter the whole ringtone as "pitch1 duration1 
+                pitch2 duration2 ..."
+              </Divider>
               <Form name="basic" onFinish={this.loadRingtone}>
                 <Form.Item name="input">
                   <TextArea className="ringtoneEditorInput" rows={5}></TextArea>
