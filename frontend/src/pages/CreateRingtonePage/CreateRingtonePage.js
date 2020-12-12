@@ -258,7 +258,6 @@ class CreateRingtonePage extends React.Component {
       let durations = [];
       let pitches = [];
       let inputArr = input.split(" ");
-      console.log(inputArr);
       for (let i = 0; i < inputArr.length; i ++) {
         let num = inputArr[i];
         if (!isNaN(num)) {

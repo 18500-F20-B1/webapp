@@ -41,8 +41,6 @@ class CreateAlarmPage extends React.Component {
     }).then((resPrivate) => {
       axios.get(`${DATABASE_URL}/ringtones`)
       .then((resPublic) => {
-        console.log(resPrivate.data);
-        console.log(resPublic.data);
         this.setState({ ringtones : [...resPrivate.data, ...resPublic.data] });
       }).catch((error) => {
         console.log(error);
