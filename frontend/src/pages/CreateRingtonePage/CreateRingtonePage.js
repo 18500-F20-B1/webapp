@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import { Divider, Select, Button, Input, message, Form } from "antd";
 import { RightCircleOutlined, PlusOutlined, DeleteOutlined, SaveOutlined,
   CaretRightOutlined } from "@ant-design/icons";
 import { DATABASE_URL, playNote, playRingtone } from "../../shared/utils";
-import axios from 'axios';
+import axios from "axios";
 
 import "./CreateRingtonePage.css";
 
@@ -51,7 +51,7 @@ const PitchSelecter = ({ pitch, noteIdx, onChangePitch }) => {
   return (
     <span className="pitchSelectSpan">
       <label>Pitch: </label>
-      <Select className="pitchSelect" 
+      <Select className="pitchSelect"
         value={pitch}
         onChange={e => onChangePitch(e, noteIdx)}>
         {/* 60 notes = 5 octaves */}
@@ -311,32 +311,35 @@ class CreateRingtonePage extends React.Component {
           </Button>
           <p className="helpText">* You can add up to 16 notes</p>
         </div>
-        <Button onClick={this.onSwitchEditMode}>Switch edit mode</Button>
-        {this.state.showNoteEditor 
-          ? <NoteEditor 
-              pitches={this.state.pitches} durations={this.state.durations}
-              onChangePitch={this.onChangePitch} 
-              onChangeDuration={this.onChangeDuration}
-              onDeleteNote={this.onDeleteNote}
-              onPlayNote={this.onPlayNote}
-            />
-          : <div className="ringtoneEditor">
-              <Divider>
-                Enter the whole ringtone as "pitch1 duration1 
-                pitch2 duration2 ..."
-              </Divider>
-              <Form name="basic" onFinish={this.loadRingtone}>
-                <Form.Item name="input">
-                  <TextArea className="ringtoneEditorInput" rows={5}></TextArea>
-                </Form.Item>
-                <Form.Item>
-                  <Button className="checkRingtone" htmlType="submit">
-                    Load Ringtone
-                  </Button>
-                </Form.Item>      
-              </Form>
-            </div>
-        }
+        <Button style={{"visibility": "hidden"}} onClick={this.onSwitchEditMode}>
+          Switch edit mode
+        </Button>
+          {
+            this.state.showNoteEditor 
+            ? <NoteEditor 
+                pitches={this.state.pitches} durations={this.state.durations}
+                onChangePitch={this.onChangePitch} 
+                onChangeDuration={this.onChangeDuration}
+                onDeleteNote={this.onDeleteNote}
+                onPlayNote={this.onPlayNote}
+              />
+            : <div className="ringtoneEditor">
+                <Divider>
+                  Enter the whole ringtone as "pitch1 duration1 
+                  pitch2 duration2 ..."
+                </Divider>
+                <Form name="basic" onFinish={this.loadRingtone}>
+                  <Form.Item name="input">
+                    <TextArea className="ringtoneEditorInput" rows={5} />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button className="checkRingtone" htmlType="submit">
+                      Load Ringtone
+                    </Button>
+                  </Form.Item>      
+                </Form>
+              </div>
+          }
       </div>
     );
   };

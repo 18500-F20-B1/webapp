@@ -3,8 +3,8 @@
 # AWS EC2
 capstone.pem
 
-# AWS SQS
-backend/config.json
+# AWS SQS & MongoDB config
+backend/config
 
 # Firebase config
 frontend/firebaseConfig.js

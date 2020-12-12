@@ -1,11 +1,11 @@
-var CronJob = require('cron').CronJob;
-const moment = require('moment-timezone');
-const fs = require('fs');
+var CronJob = require("cron").CronJob;
+const moment = require("moment-timezone");
+const fs = require("fs");
 
-const aws = require('aws-sdk');
-aws.config.loadFromPath(__dirname + '/config.json');
+const aws = require("aws-sdk");
+aws.config.loadFromPath(__dirname + "/config/awsConfig.json");
 
-const queueUrl = "https://sqs.us-east-2.amazonaws.com/248059054815/MyFirstQueue";
+const qUrl = "https://sqs.us-east-2.amazonaws.com/248059054815/MyFirstQueue";
 const sqs = new aws.SQS();
 
 const jobMap = {};
@@ -21,14 +21,15 @@ const scheduleAlarms = (alarms) => {
       () => { send(alarm); },
       null,
       true,
-      moment.tz.guess() // schedule jobs on server in whatever timezone server is in
+      moment.tz.guess() // schedule jobs in whatever timezone server is in
     );
     let jobId = getJobId(alarm);
     jobMap[jobId] = job;
 
-    let utcTime = moment(alarm.time).utc().format('HH:mm');
-    let pdtTime = moment(alarm.time).tz('America/Los_Angeles').format('HH:mm');
-    writeToLog(`Message scheduled to send at ${alarm.day}, UTC time ${utcTime} or PDT time ${pdtTime} by uid ${alarm.user}`);
+    let utcTime = moment(alarm.time).utc().format("HH:mm");
+    let pdtTime = moment(alarm.time).tz("America/Los_Angeles").format("HH:mm");
+    writeToLog(`Message scheduled to send at ${alarm.day}, UTC time ${utcTime} 
+      or PDT time ${pdtTime} by uid ${alarm.user}`);
     writeToLog(`Total number of current jobs: ${Object.keys(jobMap).length}`);
     writeToLog(`${JSON.stringify(alarm)}`);
   })
@@ -37,19 +38,21 @@ const scheduleAlarms = (alarms) => {
 const cancelAlarm = (alarm) => {
   let jobId = getJobId(alarm);
   let job = jobMap[jobId];
-  delete jobMap[jobId];
   job.stop();
+  delete jobMap[jobId];
 
-  let utcTime = moment(alarm.time).utc().format('HH:mm');
-  let pdtTime = moment(alarm.time).tz('America/Los_Angeles').format('HH:mm');
-  writeToLog(`Message delivery canceled, previously scheduled to send at ${alarm.day}, UTC time ${utcTime} or PDT time ${pdtTime} by uid ${alarm.user}`);
+  let utcTime = moment(alarm.time).utc().format("HH:mm");
+  let pdtTime = moment(alarm.time).tz("America/Los_Angeles").format("HH:mm");
+  writeToLog(`Message delivery canceled, previously scheduled to send 
+    at ${alarm.day}, UTC time ${utcTime} or PDT time ${pdtTime} 
+    by uid ${alarm.user}`);
   writeToLog(`Total number of current jobs: ${Object.keys(jobMap).length}`);
 }
 
 const send = (alarm) => {
   var params = {
     MessageBody: JSON.stringify(alarm),
-    QueueUrl: queueUrl,
+    QueueUrl: qUrl,
     DelaySeconds: 0
   };
 
@@ -75,8 +78,9 @@ const getDay = (str) => {
 
 const writeToLog = (txt) => {
   let currTime = new Date();
-  let toBeAppended = `${currTime.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} (PDT) ${txt}\n`;
-  fs.appendFile('log.txt', toBeAppended, (err) => {
+  let log = `${currTime.toLocaleString('en-US', 
+    { timeZone: 'America/Los_Angeles' })} (PDT) ${txt}\n`;
+  fs.appendFile("log.txt", log, (err) => {
     if (err) throw err;
   });
 }

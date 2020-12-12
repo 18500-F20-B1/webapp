@@ -1,5 +1,5 @@
 import React from "react";
-import axios from 'axios';
+import axios from "axios";
 import { Divider, Button, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { DATABASE_URL, playRingtone } from "../../shared/utils";

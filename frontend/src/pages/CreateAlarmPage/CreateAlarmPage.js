@@ -1,5 +1,5 @@
 import React from "react";
-import axios from 'axios';
+import axios from "axios";
 import { Divider, Button, TimePicker, Checkbox, Radio, message } from "antd";
 import { DATABASE_URL, DAYS, playRingtone } from "../../shared/utils";
 

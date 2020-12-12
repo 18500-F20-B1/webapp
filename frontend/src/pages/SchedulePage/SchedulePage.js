@@ -3,7 +3,7 @@ import { Divider, Button, message } from "antd";
 import  { DeleteOutlined } from "@ant-design/icons";
 import { DATABASE_URL, playRingtone, DAYS } from "../../shared/utils";
 import moment from "moment";
-import axios from 'axios';
+import axios from "axios";
 
 import "./SchedulePage.css";
 

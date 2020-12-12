@@ -1,21 +1,23 @@
-// borrowed from https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_mongodb
-// https://dev.to/lennythedev/rest-api-with-mongodb-atlas-cloud-node-and-express-in-10-minutes-2ii1
+/* code modified from:
+ * https://github.com/lenmorld/devto_posts/tree/master/quick_node_express_mongodb
+ * https://dev.to/lennythedev/rest-api-with-mongodb-atlas-cloud-node-and-express-in-10-minutes-2ii1
+*/
 
 const express = require("express");
 const server = express();
 
-var cors = require('cors');
+var cors = require("cors");
 server.use(cors());
 
 const path = require("path");
 // Serve static files
 server.use(express.static(path.join(__dirname, "../frontend/build")));
 
-var router = express.Router();
-server.use('/api', router);
-
 const body_parser = require("body-parser");
 server.use(body_parser.json()); // parse JSON (application/json content-type)
+
+var router = express.Router();
+server.use("/api", router);
 
 const port = 4000;
 
@@ -27,12 +29,13 @@ const alarmCollectionName = "alarms";
 
 const { scheduleAlarms, cancelAlarm } = require("./schedule-alarms");
 
-db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (ringtoneCollection, alarmCollection) { // successCallback
+db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, 
+  function (ringtoneCollection, alarmCollection) { // successCallback
 
   router.post("/ringtones/create", (request, response) => {
     console.log("POST /ringtones/create");
     let item = request.body;
-    ringtoneCollection.insertOne(item, (error, result) => { // callback of insertOne
+    ringtoneCollection.insertOne(item, (error, result) => { 
       if (error) throw error;
       else response.send(result);
     });
@@ -41,7 +44,7 @@ db.initialize(dbName, ringtoneCollectionName, alarmCollectionName, function (rin
   router.post("/alarms/create", (request, response) => {
     console.log("POST /alarms/create");
     let items = request.body;
-    alarmCollection.insertMany(items, (error, result) => { // callback of insertOne
+    alarmCollection.insertMany(items, (error, result) => { 
       if (error) throw error;
       else {
         scheduleAlarms(items);
