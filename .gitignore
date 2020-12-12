@@ -7,7 +7,7 @@ capstone.pem
 backend/config
 
 # Firebase config
-frontend/firebaseConfig.js
+frontend/src/firebaseConfig.js
 
 # logging
 log.txt
