@@ -1,11 +1,14 @@
 ## to-do list
 
-- [ ] remove edit mode in production
 - [ ] demo video - how to use
 - [ ] demo video - how it works
   - timezone management
   - user mamangement
 - [ ] test when multiple users set alarms at the same time, if latency of queue consumer will be affected
+- [ ] future enhancements:
+  - [ ] store alarm job IDs to MongoDB
+  - [ ] clear all notes
+  - [ ] batch operations on notes (increase pitch by 1 for all notes, etc)
 
 ## How I made full stack app continuously in background on EC2
 
