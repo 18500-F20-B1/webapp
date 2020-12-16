@@ -7,15 +7,11 @@ The full stack MERN(MongoDB, Express.js, React.js, Node.js) web application prov
 On the application interface(as seen in Figure 3), users can create alarms, view current alarms, create ringtones, and view current ringtones on different tabs. Across all tabs, users are given the option to play ringtones - on the first two tabs, users can play a ringtone set together with a certain alarm; on the last two tabs, users can play the ringtone on its own; on “Create a Ringtone” tab, users can preview the ringtone currently being created, or play individual notes from the ringtone. When the pitch and duration defined for a note changes, the sound of the notes also changes accordingly, as expected.
 The frontend is built with React.js framework; the visual components are from Ant Design React.js library. The npm module soundfont-player is used for audio effects.
 
-(a) “Create an Alarm” tab
-
-(b) “Create a Ringtone” tab
-
-(c) “Current Alarms” tab
-
-(d) “Current Ringtones” tab
-
-(e) Sign in page
+- ![“Create an Alarm” tab](create-alarm.png)
+- ![“Current Alarms” tab](current-alarms.png)
+- ![“Create an Ringtone” tab](create-ringtone.png)
+- ![“Current Ringtones” tab](current-ringtones.png)
+- ![Sign in tab](sign-in.png)
 
 ## Backend
 
