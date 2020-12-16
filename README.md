@@ -4,14 +4,15 @@ The full stack MERN(MongoDB, Express.js, React.js, Node.js) web application prov
 
 ## Frontend
 
-On the application interface(as seen in Figure 3), users can create alarms, view current alarms, create ringtones, and view current ringtones on different tabs. Across all tabs, users are given the option to play ringtones - on the first two tabs, users can play a ringtone set together with a certain alarm; on the last two tabs, users can play the ringtone on its own; on “Create a Ringtone” tab, users can preview the ringtone currently being created, or play individual notes from the ringtone. When the pitch and duration defined for a note changes, the sound of the notes also changes accordingly, as expected.
-The frontend is built with React.js framework; the visual components are from Ant Design React.js library. The npm module soundfont-player is used for audio effects.
+On the web application, users can create alarms, view current alarms, create ringtones, and view current ringtones on different tabs.
+Across all tabs, users are given the option to play ringtones - on the first two tabs, users can play a ringtone set together with a certain alarm; on the last two tabs, users can play the ringtone on its own; on “Create a Ringtone” tab, users can preview the ringtone currently being created, or play individual notes from the ringtone. When the pitch and duration defined for a note changes, the sound of the notes also changes accordingly, as expected.
+The frontend is built with React.js framework; the visual components are from Ant Design React.js library. The npm module `soundfont-player` is used for audio effects.
 
 “Create an Alarm” tab
 ![](screenshots/create-alarm.png)
 “Current Alarms” tab
 ![](screenshots/current-alarms.png)
-“Create an Ringtone” tab
+“Create a Ringtone” tab
 ![](screenshots/create-ringtone.png)
 “Current Ringtones” tab
 ![](screenshots/current-ringtones.png)
@@ -60,7 +61,7 @@ On the other hand, a typical ringtone entry is defined like so in the database:
 ## Alarm Scheduling
 
 One endpoint in particular, POST /alarms, for creating alarms, also writes to a message queue(built with AWS SQS). The message contains the ringtone data, and is sent to the queue at the alarm time defined. Then immediately after, Pi hosted on top of iRobot reads from the queue and initiates the robot sequence, effectively starting the alarm.
-However, remember the alarm also recurs every week. Hence, the npm module node-cron is used here to schedule a cron job, for each alarm, that sends a message like above to the message queue every week. It is important that the message is scheduled to send right on alarm time, because Pi is constantly listening to the message queue update and will interpret each new message as a call to start iRobot’s action.
+However, remember the alarm also recurs every week. Hence, the npm module `node-cron` is used to schedule a cron job, for each alarm, that sends a message like above to the message queue every week. It is important that the message is scheduled to send right on alarm time, because Pi is constantly listening to the message queue update and will interpret each new message as a call to start iRobot’s action.
 Testing for Alarm Scheduling: To verify that the jobs did get scheduled and get executed at the scheduled times, we implemented a log to keep track of all actions related to message queue changes. In the end, we have ~300 lines of entry on our log files(on both development and production servers) which we have then manually verified to confirm that there is no inconsistency in the job scheduling behaviour. The manual verification procedure includes:
 - for each alarm creation, verify if there is a line of log for the cron job being scheduled(one more job in the cron job pool), and that the job is scheduled at alarm time
 - for each effective alarm, verify if there is a line of log for the cron job being executed, and that the job is executed at the alarm time, consistently every week, with the right ringtone data
@@ -92,7 +93,7 @@ The website is hosted on a AWS EC2  instance (Ubuntu machine). Both backend and 
 4) In root directory, do `npm run dev`
 
 You will need (1) AWS credentials, (2) Google credentials, (3) an SQS queue, (4) a MongoDB Atlas cluster in order for it to work. 
-Here is a [sample client snippet](https://github.com/18500-F20-B1/RPi/tree/yh-sqs).
+Here is a [sample client snippet](https://github.com/yuhanx0728/irobot-alarm-web-app/blob/master/client.py).
 
 ## To host the web app on an EC2 instance
 
@@ -101,7 +102,7 @@ Here is a [sample client snippet](https://github.com/18500-F20-B1/RPi/tree/yh-sq
 3) In root directory, do `npx pm2 start backend/index.js --name backend`
 
 You will need (1) AWS credentials, (2) Google credentials, (3) an SQS queue, (4) a MongoDB Atlas cluster in order for it to work. 
-Here is a [sample client snippet](https://github.com/18500-F20-B1/RPi/tree/yh-sqs).
+Here is a [sample client snippet](https://github.com/yuhanx0728/irobot-alarm-web-app/blob/master/client.py).
 
 ## Misc
 
