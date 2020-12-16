@@ -1,6 +1,6 @@
 sqs = boto3.client("sqs")
 
-queue_url = "<your own queue URL"
+queue_url = "<your own queue URL>"
 
 while True:
 	# Receive message from SQS queue
